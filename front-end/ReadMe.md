@@ -1,1 +1,1 @@
-# Front-end based on React.
+# Front-end based on HTML5 specificatio

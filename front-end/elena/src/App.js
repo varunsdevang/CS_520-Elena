@@ -1,14 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
 import Map from './Map';
-import Form  from './Form';
+import NavForm  from './Form';
 
 function App() {
   return (
    
     <div className="app-container">
       <div className="form-container">
-      <Form/>
+      <NavForm/>
       </div>
       <div className="map-container">
         <Map />

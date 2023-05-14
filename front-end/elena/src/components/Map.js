@@ -1,5 +1,5 @@
 import { GoogleMap, Marker, useLoadScript, Polyline } from "@react-google-maps/api";
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import "../App.css";
 
 const Map = (props) => {
@@ -7,20 +7,25 @@ const Map = (props) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: 'AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60',
   });
-  const center = useMemo(() => ({ lat: 42.3732, lng: -72.519 }), []);
-  const currentLocation = {lat: center.lat, lng: center.lng};
+
+  const [state, setState] = useState({
+    center: { lat: 42.3732, lng: -72.519 },
+    currentLocation: { lat: 42.3732, lng: -72.519},
+    zoom: 10,
+  })
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position)=>{
-      currentLocation.lat = position.coords.latitude;
-      currentLocation.lng = position.coords.longitude;
+
+      setState({...state, currentLocation: {lat: position.coords.latitude, lng: position.coords.longitude}})
       console.log('position', position);
     })
   }, [])
 
   useEffect(() => {
     //route = route.map((coords) => new google.maps.LatLng(coords.lat, coords.lng))
-    console.log('route', route)
+    console.log('route', route);
+    setState({...state, zoom: 13, center: route[1]})
   }, [route])
 
   return (
@@ -29,11 +34,11 @@ const Map = (props) => {
         <h1>Loading...</h1>
       ) : (
         <GoogleMap
-          center={center}
-          zoom={10}
+          center={state.center}
+          zoom={state.zoom}
           mapContainerClassName="map-container"
         >
-          <Marker position={{ lat: currentLocation.lat, lng: currentLocation.lng }} />
+          <Marker position={{ lat: state.currentLocation.lat, lng: state.currentLocation.lng }} />
          <Polyline path={route} visible={true}  strokeColor={'#006aff'} strokeOpacity={1.0} strokeWeight={2}></Polyline>
         </GoogleMap>
       )}

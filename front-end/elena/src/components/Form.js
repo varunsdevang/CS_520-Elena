@@ -45,8 +45,8 @@ const NavForm = (props) => {
        
         // To error message on failure scenarioss
        // setFormData({...formData, apiError: true, errorMessage: "this is a error message"})
-       
-    //    setRoute(route);s
+       let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
+        setRoute(route);
     }
     return (
         <Container>

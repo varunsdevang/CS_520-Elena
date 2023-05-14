@@ -1,8 +1,9 @@
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, Marker, useLoadScript, Polyline } from "@react-google-maps/api";
 import { useEffect, useMemo } from "react";
 import "../App.css";
 
-const Map = () => {
+const Map = (props) => {
+  const {route} = props;
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: 'AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60',
   });
@@ -17,6 +18,11 @@ const Map = () => {
     })
   }, [])
 
+  useEffect(() => {
+    //route = route.map((coords) => new google.maps.LatLng(coords.lat, coords.lng))
+    console.log('route', route)
+  }, [route])
+
   return (
     <div className="Map">
       {!isLoaded ? (
@@ -28,6 +34,7 @@ const Map = () => {
           mapContainerClassName="map-container"
         >
           <Marker position={{ lat: currentLocation.lat, lng: currentLocation.lng }} />
+         <Polyline path={route} visible={true}  strokeColor={'#006aff'} strokeOpacity={1.0} strokeWeight={2}></Polyline>
         </GoogleMap>
       )}
     </div>

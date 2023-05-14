@@ -10,6 +10,7 @@ import Slider from '@mui/material/Slider';
 import Button from '@mui/material/Button';
 import React, { useState } from 'react';
 import ErrorDialog from './ErrorDialog';
+import MetricTable from './Metrics';
 
 const NavForm = (props) => {
     const {setRoute} = props;
@@ -67,6 +68,7 @@ const NavForm = (props) => {
             <Button variant="contained" onClick={handleSubmit}>Submit</Button>
             <ErrorDialog open={formData.apiError} message={formData.errorMessage} onClose={handleDialogClose}>
             </ErrorDialog>
+            <MetricTable></MetricTable>
         </Container>     
     );
 }

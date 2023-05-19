@@ -9,10 +9,36 @@
 }
 
 .form-container{
-  width: 40%;
+  width: 45%;
 }
 
 .map-container {
   height: 100%;
-  width: 60%;
+  width: 55%;
+}
+
+.textfield-container {
+  display: flex;
+  margin-left: 10%;
+}
+
+.source-textfield,
+.destination-textfield {
+  flex: 1;
+}
+
+.navigation-icon{
+  margin-left: -50px;
+}
+
+.icons-container{
+  margin-top: 30px;
+}
+
+.submit-button{
+  margin-top: 30px;
+}
+
+.metrictable-container{
+  margin-top: 50px;
 }

@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 
 
 const MetricTable = (props) => {
-    const metrics = ["Est Travel Time", "Distance", "Calories", "Elevation Gain"]
+    const metrics = ["Elevation Gain: ", "Distance Travelled: ", "Est. Travel Time: ", "Calories: "]
     
     return (
         <TableContainer component={Paper}>
@@ -24,7 +24,7 @@ const MetricTable = (props) => {
                     metrics.map( (m) => (
                        <TableRow>
                             <TableCell >{m}</TableCell>
-                            <TableCell >1</TableCell>
+                            <TableCell >100</TableCell>
                        </TableRow>
                     ))
                 }

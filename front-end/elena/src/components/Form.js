@@ -1,12 +1,14 @@
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import TerrainroundedIcon from '@mui/icons-material/TerrainRounded';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DriveEtaIcon from '@mui/icons-material/DriveEta';
 import HikingIcon from '@mui/icons-material/Hiking';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Slider from '@mui/material/Slider';
+import { FormGroup, Switch, FormControlLabel } from '@mui/material';
 import Button from '@mui/material/Button';
 import React, { useState } from 'react';
 import ErrorDialog from './ErrorDialog';
@@ -51,24 +53,46 @@ const NavForm = (props) => {
     }
     return (
         <Container>
-            <h1> Elena <TerrainroundedIcon fontSize='inherit'></TerrainroundedIcon> </h1>
-            <TextField id="outlined-basic" label="Source" variant="outlined" value={formData.source} onChange={e => setFormData({...formData, source:e.target.value})}/>
-            <TextField id="outlined-basic" label="Destination" variant="outlined" value={formData.destination} onChange={e => setFormData({...formData, destination:e.target.value})}/>
-            <br></br>
-            <Slider  defaultValue={10} value={formData.distConstraint} aria-label="slider" onChange={e=> setFormData({...formData, distConstraint: e.target.value})}/>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <h1> EleNa <TerrainroundedIcon fontSize='inherit' /></h1>
+            </div>
+            <div className="textfield-container">
+                <div className="source-textfield">
+                    <TextField id="outlined-basic" label="Source" variant="outlined" value={formData.source} onChange={e => setFormData({...formData, source:e.target.value})}/>
+                </div>
+                <div className="navigation-icon" >
+                    <SwapHorizIcon className="navigation-icon" style={{ fontSize: '3.5rem' }}></SwapHorizIcon>
+                </div>
+                <div className="destination-textfield">
+                    <TextField id="outlined-basic" label="Destination" variant="outlined" value={formData.destination} onChange={e => setFormData({...formData, destination:e.target.value})}/>
+                </div>
+            </div>
+            <div className='slider-element'>
+                <Slider color="primary" defaultValue={10} value={formData.distConstraint} aria-label="slider" valueLabelDisplay="auto" 
+                onChange={e=> setFormData({...formData, distConstraint: e.target.value})}/>      
+            </div>
+            <FormGroup style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <FormControlLabel control={<Switch defaultChecked />} label="Min. Gain" defaultChecked color="default" />
+                <FormControlLabel control={<Switch defaultChecked />} label="Max. Gain" defaultChecked color="default" />
+            </FormGroup>
             <ToggleButtonGroup
+                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                className='icons-container'
                 color="primary"
                 exclusive
-                aria-label="Way"
-                >
+                aria-label="Way" >
                 <ToggleButton value="walking"><HikingIcon></HikingIcon></ToggleButton>
                 <ToggleButton value="cycling"><DirectionsBikeIcon></DirectionsBikeIcon></ToggleButton>
                 <ToggleButton value="driving"><DriveEtaIcon></DriveEtaIcon></ToggleButton>
             </ToggleButtonGroup>
-            <Button variant="contained" onClick={handleSubmit}>Submit</Button>
+            <div className='submit-button' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <Button variant="contained" onClick={handleSubmit}>Go!</Button>
+            </div>
             <ErrorDialog open={formData.apiError} message={formData.errorMessage} onClose={handleDialogClose}>
             </ErrorDialog>
-            <MetricTable></MetricTable>
+            <div className='metrictable-container' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <MetricTable></MetricTable>
+            </div>
         </Container>     
     );
 }

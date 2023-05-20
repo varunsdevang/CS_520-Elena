@@ -3,6 +3,7 @@ import requests
 import time
 import utils
 import pickle as pkl
+import os
 
 graphs = "./graphs/"
 extension = ".pkl"
@@ -12,25 +13,26 @@ class Graph:
     def __init__(self,start,end):
         self.start_point = start
         self.end_point = end
-        self.cache = {"Amherst_Massachusetts"} #load cache later somehow
         self.graph = None
         self.generate_graph()
 
     def generate_graph(self):
         area_match = utils.checkForSourceAndDestCity(self.start_point,self.end_point)
         same_area = False
+        graphs_available_in_cache = os.listdir(graphs)
         if(area_match["result"]):
             same_area = True
         if same_area:
             city = area_match["city"]
             state = area_match["state"]
             location = city+"_"+state
-            if location in self.cache:
-                self.graph = pkl.load(open(graphs+location+extension,"rb"))
+            file_name = location+extension
+            if file_name in graphs_available_in_cache:
+                self.graph = pkl.load(open(graphs+file_name,"rb"))
             else:
                 self.graph = ox.graph_from_place(city+","+state+",USA")
                 self.add_elevation_data()
-                pkl.dump(self.graph, open(graphs+location+extension, "wb"))
+                pkl.dump(self.graph, open(graphs+file_name, "wb"))
         else:
             midpoint_lat,midpoint_lng = ox.geocode(self.location)
             return ox.graph.graph_from_point(midpoint_lat,midpoint_lng,dist=2000)

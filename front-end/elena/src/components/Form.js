@@ -8,7 +8,7 @@ import HikingIcon from '@mui/icons-material/Hiking';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Slider from '@mui/material/Slider';
-import { FormGroup, Switch, FormControlLabel } from '@mui/material';
+import { Select, InputLabel, FormControl, MenuItem } from '@mui/material';
 import Button from '@mui/material/Button';
 import React, { useState } from 'react';
 import ErrorDialog from './ErrorDialog';
@@ -68,13 +68,25 @@ const NavForm = (props) => {
                 </div>
             </div>
             <div className='slider-element'>
-                <Slider color="primary" defaultValue={10} value={formData.distConstraint} aria-label="slider" valueLabelDisplay="auto" 
+                <Slider color="primary" defaultValue={0} value={formData.distConstraint} aria-label="slider" valueLabelDisplay="auto" 
                 onChange={e=> setFormData({...formData, distConstraint: e.target.value})}/>      
+            </div> 
+            <div style={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                <h6> % increase from minimum distance </h6>
             </div>
-            <FormGroup style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <FormControlLabel control={<Switch defaultChecked />} label="Min. Gain" defaultChecked color="default" />
-                <FormControlLabel control={<Switch defaultChecked />} label="Max. Gain" defaultChecked color="default" />
-            </FormGroup>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <FormControl fullWidth sx={{ width: '50%' }} >
+                    <InputLabel id="demo-simple-select-label">Elevation Gain</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        label="ElevationGain">
+                        <MenuItem value={0}>Minimum</MenuItem>
+                        <MenuItem value={100}>Maximum</MenuItem>
+                    </Select>
+                </FormControl>
+            </div>
+
             <ToggleButtonGroup
                 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                 className='icons-container'

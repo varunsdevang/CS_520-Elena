@@ -1,4 +1,5 @@
 from flask import Flask,request,jsonify
+from flask_cors import CORS, cross_origin
 import sys
 import os
 
@@ -13,6 +14,8 @@ app = Flask(__name__)
 app.config["CACHE_TYPE"] = "null"
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app)
 
 @app.route("/")
 def hello_world():

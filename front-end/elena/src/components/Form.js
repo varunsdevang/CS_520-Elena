@@ -53,12 +53,13 @@ const NavForm = (props) => {
             //body: JSON.stringify(formData)
         })
         .then(response => response.json())
-        .then(data => console.log(data)) // set map route from props
+        .then(data =>  setFormData({...formData, route:data["result"]})) // set map route from props
         .catch(error => console.error(error)); // set error window.
        
         // To error message on failure scenarioss
        // setFormData({...formData, apiError: true, errorMessage: "this is a error message"})
        let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
+       console.log(formData["route"])
         setRoute(formData["route"]);
     }
     return (

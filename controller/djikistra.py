@@ -18,6 +18,7 @@ class Djikistra:
 		path = [self.ending_node]
 		curr_node = self.ending_node
 		while(curr_node!=self.starting_node):
+			print(curr_node)
 			curr_node = closest_nodes[curr_node]
 			path.insert(0,curr_node)
 		return path
@@ -34,6 +35,7 @@ class Djikistra:
 		while nodes:
 			cost, node = heapq.heappop(nodes)
 			if (node == self.ending_node):
+				print(self.ending_node)
 				break
 
 			for end_a,end_b,path_info in self.graph.edges(node,data=True):
@@ -42,10 +44,13 @@ class Djikistra:
 					cost_record[end_b] = cost_record[end_a] + cost_a_b
 					closest_node_record[end_b] = end_a
 					heapq.heappush(nodes, (cost_record[end_b], end_b))
-
+		#print(closest_node_record)
 		path = self.return_path(closest_node_record)
 		return path
 
-# G = ox.graph_from_xml(filepath='amherst.osm')
-# d = Djikistra(G,66730551,6371920027)
-# d.shortest_path()
+# start = "360 Huntington Ave, Boston, Massachusetts, USA"
+# end = "650 N Pleasant St, Amherst, Massachusetts, USA"
+# midpoint_lat,midpoint_lng = ox.geocode(start)
+# G = ox.graph.graph_from_point((midpoint_lat,midpoint_lng),dist=10000)
+# d = Djikistra(G,start,end)
+# print(d.shortest_path())

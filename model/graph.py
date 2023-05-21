@@ -1,7 +1,7 @@
 import osmnx as ox
 import requests
 import time
-from .utils import *
+import utils
 import pickle as pkl
 import os
 import logging
@@ -21,7 +21,7 @@ class Graph:
 
     def generate_graph(self):
         logging.info(f"Checking for same area (city,state) match for source and destination to plot graph for the entire city")
-        area_match = checkForSourceAndDestCity(self.start_point,self.end_point)
+        area_match = utils.checkForSourceAndDestCity(self.start_point,self.end_point)
         same_area = False
         graphs_available_in_cache = os.listdir(graphs)
         if(area_match["result"]):
@@ -42,8 +42,8 @@ class Graph:
                 self.add_elevation_data()
                 pkl.dump(self.graph, open(graphs+file_name, "wb"))
         else:
-            midpoint_lat,midpoint_lng = ox.geocode(self.location)
-            self.graph = ox.graph.graph_from_point(midpoint_lat,midpoint_lng,dist=2000)
+            midpoint_lat,midpoint_lng = ox.geocode(self.start_point)
+            self.graph = ox.graph.graph_from_point((midpoint_lat,midpoint_lng),dist=2000)
     
     def add_elevation_data(self):
         n = len(self.graph.nodes)
@@ -74,6 +74,6 @@ class Graph:
     def get_graph(self):
         return self.graph
 
-#G = Graph("147, Brittany Manor Dr, Amherst, Massachusetts, USA", "650 N Pleasant St, Amherst, Massachusetts, USA")
+#G = Graph("Stop & Shop, 440 Russell Street, Hadley, Massachusetts, USA", "650 N Pleasant St, Amherst, Massachusetts, USA","dr")
 
 

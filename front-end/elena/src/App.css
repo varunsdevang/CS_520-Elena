@@ -19,7 +19,7 @@
 
 .textfield-container {
   display: flex;
-  margin-left: 10%;
+  margin-left: 15%;
 }
 
 .source-textfield,
@@ -28,7 +28,8 @@
 }
 
 .navigation-icon{
-  margin-left: -50px;
+  margin-top: 0px;
+  margin-left: -52px;
 }
 
 .icons-container{
@@ -41,4 +42,15 @@
 
 .metrictable-container{
   margin-top: 50px;
+}
+
+.slider-element{
+  margin-top: 20px;
+  margin-bottom: -30px;
+}
+
+.elenaHeading{
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
 }

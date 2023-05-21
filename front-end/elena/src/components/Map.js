@@ -5,7 +5,8 @@ import "../App.css";
 const Map = (props) => {
   const {route} = props;
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60',
+    googleMapsApiKey: 'AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60', //Varun API
+    // googleMapsApiKey: 'AIzaSyCGP0U5PmCV0ZYtrlvOGQ3sdaWMi05LQt4'  //Prathiksha API
   });
 
   const [state, setState] = useState({

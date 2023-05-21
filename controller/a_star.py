@@ -4,17 +4,10 @@ import heapq
 import pickle as pkl
 
 class A_Star:
-    def __init__(self,G,start,end):
+    def __init__(self,G,starting_node,ending_node):
         self.graph = G
-        self.start = start
-        self.end = end
-        self.get_nodes()
-
-    def get_nodes(self):
-        start_lat,start_lng = ox.geocode(self.start)
-        end_lat,end_lng = ox.geocode(self.end)
-        self.starting_node = ox.nearest_nodes(self.graph,start_lng,start_lat)
-        self.ending_node = ox.nearest_nodes(self.graph,end_lng,end_lat)
+        self.starting_node = starting_node
+        self.ending_node = ending_node
 
     def return_path(self,closest_nodes):
         path = [self.ending_node]

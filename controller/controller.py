@@ -1,10 +1,11 @@
 from flask import Flask,request,jsonify
+from flask_cors import CORS, cross_origin
 import sys
 import os
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath("graph.py"))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
-from model.graph import Graph
+import model.graph
 import utils
 import djikistra
 
@@ -13,6 +14,8 @@ app = Flask(__name__)
 app.config["CACHE_TYPE"] = "null"
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app)
 
 @app.route("/")
 def hello_world():
@@ -26,7 +29,7 @@ def get_route():
     percent_gain = "125"
     elevation = "max"
 
-    model1 = Graph(starting_point,ending_point,"dr")
+    model1 = model.graph.Graph(starting_point,ending_point,"dr")
     G = model1.get_graph()
     path_finder = djikistra.Djikistra(G,starting_point,ending_point)
     nodes_list = path_finder.shortest_path()

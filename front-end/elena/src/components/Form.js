@@ -26,6 +26,7 @@ const NavForm = (props) => {
         distConstraint: 0,
         navType:'',
         errorMessage: '',
+        route:[],
         apiError: false,
         submitted: false,
     })
@@ -43,23 +44,22 @@ const NavForm = (props) => {
         console.log('Submit');
         console.log(formData);
         setFormData({...formData, apiError: false, submitted: true});
-        /*
-        fetch('http://backend.com/api/path', {
-            method: 'POST',
+        
+        fetch(`http://127.0.0.1:5000/get-route?source=${formData["source"]}&destination=${formData["destination"]}`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(formData)
+            //body: JSON.stringify(formData)
         })
         .then(response => response.json())
         .then(data => console.log(data)) // set map route from props
         .catch(error => console.error(error)); // set error window.
-        */
        
         // To error message on failure scenarioss
        // setFormData({...formData, apiError: true, errorMessage: "this is a error message"})
        let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
-        setRoute(route);
+        setRoute(formData["route"]);
     }
     return (
         <Container>

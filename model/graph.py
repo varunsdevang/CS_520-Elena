@@ -1,39 +1,49 @@
 import osmnx as ox
 import requests
 import time
-import utils
+from .utils import *
 import pickle as pkl
+import os
+import logging
 
-graphs = "./graphs/"
+graphs = "../model/graphs/"
 extension = ".pkl"
 request = "https://api.opentopodata.org/v1/aster30m?locations="
+logging.basicConfig(level = logging.INFO)
 
 class Graph:
-    def __init__(self,start,end):
+    def __init__(self,start,end,mode):
         self.start_point = start
         self.end_point = end
-        self.cache = {"Amherst_Massachusetts"} #load cache later somehow
         self.graph = None
+        self.mode = mode
         self.generate_graph()
 
     def generate_graph(self):
-        area_match = utils.checkForSourceAndDestCity(self.start_point,self.end_point)
+        logging.info(f"Checking for same area (city,state) match for source and destination to plot graph for the entire city")
+        area_match = checkForSourceAndDestCity(self.start_point,self.end_point)
         same_area = False
+        graphs_available_in_cache = os.listdir(graphs)
         if(area_match["result"]):
             same_area = True
         if same_area:
             city = area_match["city"]
             state = area_match["state"]
+            logging.info(f"Source and destination found to be of the same area - {city},{state}")
             location = city+"_"+state
-            if location in self.cache:
-                self.graph = pkl.load(open(graphs+location+extension,"rb"))
+            file_name = location+extension
+            if file_name in graphs_available_in_cache:
+                logging.info(f"Getting {city} graph from cache!")
+                self.graph = pkl.load(open(graphs+file_name,"rb"))
             else:
+                logging.info(f"Generating {city} graph and saving it in cache for future use!")
                 self.graph = ox.graph_from_place(city+","+state+",USA")
+                logging.info(f"Adding elevation data to the graph!")
                 self.add_elevation_data()
-                pkl.dump(self.graph, open(graphs+location+extension, "wb"))
+                pkl.dump(self.graph, open(graphs+file_name, "wb"))
         else:
             midpoint_lat,midpoint_lng = ox.geocode(self.location)
-            return ox.graph.graph_from_point(midpoint_lat,midpoint_lng,dist=2000)
+            self.graph = ox.graph.graph_from_point(midpoint_lat,midpoint_lng,dist=2000)
     
     def add_elevation_data(self):
         n = len(self.graph.nodes)
@@ -60,7 +70,10 @@ class Graph:
 
         for node in range(n):
             self.graph.nodes[node_ids[node]]["elevation"] = elevation_data[node]
+    
+    def get_graph(self):
+        return self.graph
 
-G = Graph("147, Brittany Manor Dr, Amherst, Massachusetts, USA", "650 N Pleasant St, Amherst, Massachusetts, USA")
+#G = Graph("147, Brittany Manor Dr, Amherst, Massachusetts, USA", "650 N Pleasant St, Amherst, Massachusetts, USA")
 
 

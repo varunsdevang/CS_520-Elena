@@ -1,1 +1,0 @@
-# REST Backend using Django Framework.

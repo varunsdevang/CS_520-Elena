@@ -14,11 +14,13 @@ import Button from '@mui/material/Button';
 import React, { useState } from 'react';
 import ErrorDialog from './ErrorDialog';
 import MetricTable from './Metrics'; 
+import CircularProgress from '@mui/material/CircularProgress';
 // import Autocomplete from '@mui/material/Autocomplete';
 
 const NavForm = (props) => {
     const {setRoute} = props;
     const [selectedWay, setSelectedWay] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         source: '',
         destination: '',
@@ -41,9 +43,12 @@ const NavForm = (props) => {
     };
 
     const handleSubmit = () => {
+        setIsLoading(true);
         console.log('Submit');
         console.log(formData);
+        
         setFormData({...formData, apiError: false, submitted: true});
+
         
         fetch(`http://127.0.0.1:5000/get-route?source=${formData["source"]}&destination=${formData["destination"]}`, {
             method: 'GET',
@@ -53,17 +58,19 @@ const NavForm = (props) => {
             //body: JSON.stringify(formData)
         })
         .then(response => response.json())
-        .then(data =>  setFormData({...formData, route:data["result"]})) // set map route from props
-        .catch(error => console.error(error)); // set error window.
+        .then(data =>  { setFormData({...formData, route:data["result"]}); setIsLoading(false);}) // set map route from props
+        .catch(error => {console.error(error); setIsLoading(false);} ); // set error window.
        
         // To error message on failure scenarioss
        // setFormData({...formData, apiError: true, errorMessage: "this is a error message"})
-       let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
+       //let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
+       //setRoute(route);
        console.log(formData["route"])
         setRoute(formData["route"]);
     }
     return (
         <Container>
+            
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <TerrainroundedIcon />
                 <h1 className="elenaHeading" style={{ alignItems: "center" }}  > EleNa </h1>
@@ -209,18 +216,25 @@ const NavForm = (props) => {
             <div className='submit-button' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <Button variant="contained" onClick={handleSubmit}>Go!</Button>
             </div>
-            <ErrorDialog open={formData.apiError} message={formData.errorMessage} onClose={handleDialogClose}>
-            </ErrorDialog>
+            
+            {isLoading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <CircularProgress />
+                </div>
+                ) : (
+            <>
+            <ErrorDialog open={formData.apiError} message={formData.errorMessage} onClose={handleDialogClose} />
             
             {formData.submitted && (
                 <div className='metrictable-container' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <MetricTable />
                 </div>
             )}
-
             {/* <div className='metrictable-container' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <MetricTable />
             </div> */}
+            </>
+                )}
         </Container>     
     );
 }

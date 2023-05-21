@@ -32,6 +32,7 @@ const NavForm = (props) => {
 
     const handleWayChange = (event, newWay) => {
       setSelectedWay(newWay);
+      setFormData({...formData, navType:newWay});
     }
 
     const handleDialogClose = () => {
@@ -41,6 +42,7 @@ const NavForm = (props) => {
     const handleSubmit = () => {
         console.log('Submit');
         console.log(formData);
+        setFormData({...formData, apiError: false, submitted: true});
         /*
         fetch('http://backend.com/api/path', {
             method: 'POST',
@@ -58,7 +60,6 @@ const NavForm = (props) => {
        // setFormData({...formData, apiError: true, errorMessage: "this is a error message"})
        let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
         setRoute(route);
-        setFormData({ ...formData, submitted: true });
     }
     return (
         <Container>
@@ -95,8 +96,7 @@ const NavForm = (props) => {
                     id="outlined-basic"
                     label="Source"
                     variant="outlined"
-                    value={formData.source}
-                    onChange={(e) => setFormData({ ...formData, source: e.target.value })}
+                    value={formData.source}   
                     /> */}
 
                     <Autocomplete
@@ -108,6 +108,7 @@ const NavForm = (props) => {
                             options={{
                                 types: ['geocode'],
                             }}
+                            onChange={(e) => setFormData({ ...formData, source: e.target.value })}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -115,12 +116,9 @@ const NavForm = (props) => {
                                     label="Source"
                                     variant="outlined"
                                     value={formData.source}
-                                    onChange={(e) => setFormData({ ...formData, source: e.target.value })}
                                 />
                             )}
                         />
-
-
                 </div>
 
                 <div className="navigation-icon">
@@ -155,14 +153,14 @@ const NavForm = (props) => {
                             options={{
                                 types: ['geocode'],
                             }}
+                            onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
                                     id="outlined-basic"
                                     label="Destination"
                                     variant="outlined"
-                                    value={formData.destination}
-                                    onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
+                                    value={formData.destination}   
                                 />
                             )}
                         />
@@ -177,13 +175,15 @@ const NavForm = (props) => {
             <div style={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
                 <h5> Increase % from minimum distance </h5>
             </div>
+
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <FormControl fullWidth sx={{ width: '50%' }} >
                     <InputLabel id="demo-simple-select-label">Elevation Gain</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        label="ElevationGain">
+                        label="ElevationGain"
+                        onChange={e=> setFormData({...formData, elevationGain: e.target.value})}>
                         <MenuItem value={0}>Minimum</MenuItem>
                         <MenuItem value={100}>Maximum</MenuItem>
                     </Select>
@@ -197,10 +197,12 @@ const NavForm = (props) => {
                 exclusive
                 aria-label="Way" 
                 value={selectedWay}
-                onChange={handleWayChange}>
-                <ToggleButton value="walking"><HikingIcon ></HikingIcon></ToggleButton>
-                <ToggleButton value="cycling"><DirectionsBikeIcon></DirectionsBikeIcon></ToggleButton>
-                <ToggleButton value="driving"><DriveEtaIcon ></DriveEtaIcon></ToggleButton>
+                onChange={handleWayChange}
+                // onChange={e=> setFormData({...formData, navType:e.target.value})}
+                >
+                <ToggleButton value="walking" ><HikingIcon ></HikingIcon></ToggleButton>
+                <ToggleButton value="cycling" ><DirectionsBikeIcon></DirectionsBikeIcon></ToggleButton>
+                <ToggleButton value="driving" ><DriveEtaIcon ></DriveEtaIcon></ToggleButton>
             </ToggleButtonGroup>
 
             <div className='submit-button' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
@@ -214,6 +216,10 @@ const NavForm = (props) => {
                 <MetricTable />
                 </div>
             )}
+
+            {/* <div className='metrictable-container' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <MetricTable />
+            </div> */}
         </Container>     
     );
 }

@@ -29,7 +29,6 @@ const MetricTable = (props) => {
                     </TableRow>
                 ))}
                 </TableBody>
-
             </Table>
         </TableContainer>
         

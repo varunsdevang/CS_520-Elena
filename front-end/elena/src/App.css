@@ -28,7 +28,8 @@
 }
 
 .navigation-icon{
-  margin-left: -38px;
+  margin-top: 0px;
+  margin-left: -52px;
 }
 
 .icons-container{
@@ -46,4 +47,10 @@
 .slider-element{
   margin-top: 20px;
   margin-bottom: -30px;
+}
+
+.elenaHeading{
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
 }

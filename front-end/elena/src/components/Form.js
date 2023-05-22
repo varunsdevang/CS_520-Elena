@@ -64,11 +64,13 @@ const NavForm = (props) => {
         .then(response => response.json())
         .then(data =>  setFormData({...formData, route:data["result"]})) // set map route from props
         .catch(error => console.error(error)); // set error window.
+        setIsLoading(false); 
        
         // For debugging...
        //let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
        console.log(formData.route);
        setRoute(formData.route);
+       
     }
 
     // method to load place suggestions for the given input. will only be invoked after the input string length of 3 is reached.
@@ -242,8 +244,9 @@ const NavForm = (props) => {
             </ToggleButtonGroup>
 
             <div className='submit-button' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Button variant="contained" onClick={handleSubmit}>Go!</Button>
+                <Button variant="contained" onClick={handleSubmit} >Go!</Button>
             </div>
+            
             
             {isLoading ? (
                 <div className="loading-overlay">

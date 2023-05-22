@@ -1,17 +1,16 @@
+import os
+import sys
+SCRIPT_DIR = os.path.dirname(os.path.abspath("CS_520-Elena"))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
 import osmnx as ox
-import networkx as nx
 import requests
 import time
 from .utils import UtilsForModel
 import pickle as pkl
-import os
 import logging
+import constants
 from geopy.distance import geodesic
-
-graphs_folder = "../model/graphs/"
-extension = ".pkl"
-graphs_available_in_cache = os.listdir(graphs_folder)
-request = "https://api.opentopodata.org/v1/aster30m?locations="
 logging.basicConfig(level = logging.INFO)
 
 class Graph:
@@ -26,49 +25,80 @@ class Graph:
         self.save_graph()
 
     def generate_graph(self):
-        logging.info(f"Checking for same area (city,state) match for source and destination to plot graph for the entire city")
+        logging.info(f"Checking for same area match for source and destination to plot appropriate graph..")
         area_match = self.utils.checkForSourceAndDestCity(self.start_point,self.end_point)
+        
+        # error handling
+        if not area_match:
+            self.graph = None
+            return
+        
         city_match = area_match["city_match"]
         state_match = area_match["state_match"]
         
         if city_match and state_match:
+            # both state and city are the same so it is enough to generate only city graph
             city = area_match["result"]["city"]
             state = area_match["result"]["state"]
             
             logging.info(f"Source and destination found to be of the same area - {city},{state}")
             
-            temp_file_name = city+"_"+state+"_"+self.mode+extension
-            self.file_name = graphs_folder + temp_file_name
-            if temp_file_name in graphs_available_in_cache:
-                logging.info(f"Getting {city} graph from cache!")
-                self.graph = pkl.load(open(self.file_name,"rb"))
+            file_exists,self.file_name = self.utils.return_graph_file([city,state,self.mode])
+        
+            if file_exists:
+                try:
+                    logging.info(f"Getting {city} graph from cache!")
+                    self.graph = pkl.load(open(self.file_name,"rb"))
+                except:
+                    logging.error("Something went wrong while reading the graph from cache!!")
+                    self.graph = None
+                    return
             else:
                 logging.info(f"Generating {city} graph...")
-                self.graph = ox.graph_from_place(city+","+state+",USA", network_type=self.mode)
+                
+                try:
+                    self.graph = ox.graph_from_place(city+","+state+",USA", network_type=self.mode)
+                except:
+                    logging.error("Something went wrong while generating the graph from osmnx module!!")
+                    self.graph = None
+                    return
+                
                 logging.info(f"Adding elevation data to the graph!")
                 self.add_elevation_data()
+            
             logging.info(f"Adding speed and time of travel for each edge on the graph...")
             self.graph = self.utils.calculateTimeTakenForEachEdge(self.graph,self.mode)
         
         elif state_match:
             state = area_match["result"]["state"]
             logging.info(f"Source and destination found to be of the same state - {state}")
-            temp_file_name = state+"_"+self.mode+extension
-            self.file_name = graphs_folder + temp_file_name
-            if temp_file_name in graphs_available_in_cache:
-                logging.info(f"Getting {state} graph from cache!")
-                self.graph = pkl.load(open(graphs+file_name,"rb"))
+            file_exists, self.file_name = utils.return_graph_file([state,self.mode])
+            if file_exists:
+                try:
+                    logging.info(f"Getting {state} graph from cache!")
+                    self.graph = pkl.load(open(self.file_name,"rb"))
+                except:
+                    logging.error("Something went wrong while reading the graph from cache!!")
+                    self.graph = None
+                    return
             else:
                 logging.info(f"Generating {state} graph...")
-                self.graph = ox.graph_from_place(state+",USA", network_type=self.mode)
+                self.file_name = '_'.join([state,self.mode])
+                try:
+                    self.graph = ox.graph_from_place(state+",USA", network_type=self.mode)
+                except:
+                    logging.error("Something went wrong while generating the graph from osmnx module!!")
+                    self.graph = None
+                    return
+                
                 self.add_elevation_data()
 
         else:
             start_lat,start_lng = ox.geocode(self.start_point)
             end_lat,end_lng = ox.geocode(self.end_point)
-            #distance = ox.distance.euclidean_dist_vec(start_lat,start_lng,end_lat,end_lng)
-            distance=geodesic((start_lat,start_lng),(end_lat,end_lng) ).km
-            print("distance:",distance)
+
+            distance=geodesic((start_lat,start_lng),(end_lat,end_lng)).km
+            
             if distance<10:
                 logging.info(f"Source and destination aren't in the same area, generating new graph within 10km radius...")
                 self.graph = ox.graph.graph_from_point((start_lat,start_lng),dist=10000)
@@ -78,7 +108,13 @@ class Graph:
 
     def save_graph(self):
         if self.file_name:
-            pkl.dump(self.graph, open(self.file_name, "wb"))      
+            try:
+                pkl.dump(self.graph, open(self.file_name, "wb")) 
+            except:
+                logging.error("Something went wrong while saving the generated graph!!")
+                return
+        else:
+            logging.warn("Something might have gone wrong while generating the graph...")     
     
     def add_elevation_data(self):
         logging.info(f"Adding elevation data by making calls to OpenTopo...")
@@ -96,7 +132,7 @@ class Graph:
             # batching the nodes to be sent to the api
             lower_index = calls*100
             higher_index = min((calls+1)*100,n)
-            print(lower_index,higher_index)
+            logging.info(f"Making batch calls to OpenTopo from {low} to {high}", lower_index, higher_index)
             node_coordinates = list(graph_data.items())[lower_index:higher_index]
             
             # formatting the coordinates as needed by the api -- lat1,lng1|lat2,lng2|lat3,lng3...
@@ -107,7 +143,13 @@ class Graph:
             request_data = '|'.join(str_locations)
 
             # sending request to the open-topo api
-            response = requests.get(request + request_data).json()
+            try:
+                response = requests.get(constants.open_topo_request + request_data).json()
+            except:
+                logging.error(f"Some error occured while making calls to OpenTopo for current batch!!")
+                self.graph = None
+                return
+            
             if "results" not in response:
                 continue
             elevation_data.extend([x["elevation"] for x in response["results"]])
@@ -123,6 +165,6 @@ class Graph:
     def get_graph(self):
         return self.graph
 
-# G = Graph("147 Brittany Manor Dr, Amherst, Massachusetts, USA", "650 N Pleasant St, Amherst, Massachusetts, USA","drive")
+#G = Graph("147 Brittany Manor Dr, Amherst, Massachusetts, USA", "650 N Pleasant St, Amherst, Massachusetts, USA","fly")
 
 

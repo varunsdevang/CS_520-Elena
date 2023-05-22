@@ -1,3 +1,5 @@
+from flask import jsonify
+
 class UtilsController:
 
     def convert_nodes_to_coordinates(self,graph,path):
@@ -38,6 +40,9 @@ class UtilsController:
             node_pointer+=1
             travel_time+=graph.edges[path[prev_node_pointer],path[node_pointer],0]["travel_time"]
         return travel_time
+    
+    def return_error_response(self, error_message):
+        return jsonify({"errorMessage":error_message}),400
 
     
     

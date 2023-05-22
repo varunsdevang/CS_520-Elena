@@ -12,7 +12,7 @@ class TestElenaService(unittest.TestCase):
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
         elevation_type=100 #max
         percentage=125
-        navType="drive"
+        navType="fly"
         
         body={
             'source': origin,

@@ -39,8 +39,10 @@ const Map = (props) => {
           zoom={state.zoom}
           mapContainerClassName="map-container"
         >
-          <Marker position={{ lat: state.currentLocation.lat, lng: state.currentLocation.lng }} />
-         <Polyline path={route} visible={true}  strokeColor={'#006aff'} strokeOpacity={1.0} strokeWeight={2}></Polyline>
+        <Marker position={{ lat: state.currentLocation.lat, lng: state.currentLocation.lng }} />
+        { route.length >= 2 && <Marker position={{ lat: route[0].lat, lng: route[0].lng}} />}
+        { route.length >= 2 && <Marker position={{ lat: route[route.length-1].lat, lng: route[route.length-1].lng}} />}
+        <Polyline path={route} visible={true}  strokeColor={'#006aff'} strokeOpacity={1.0} strokeWeight={2}></Polyline>
         </GoogleMap>
       )}
     </div>

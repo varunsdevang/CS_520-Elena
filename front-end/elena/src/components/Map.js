@@ -21,7 +21,7 @@ const Map = (props) => {
   useEffect(() => {
     // load current location.
     navigator.geolocation.getCurrentPosition((position)=>{
-      setState({...state, currentLocation: {lat: position.coords.latitude, lng: position.coords.longitude}})
+      setState({...state, center: {lat: position.coords.latitude, lng: position.coords.longitude}, currentLocation: {lat: position.coords.latitude, lng: position.coords.longitude}})
     })
   }, []);
 
@@ -40,7 +40,7 @@ const Map = (props) => {
           zoom={state.zoom}
           mapContainerClassName="map-container"
         >
-        {/* <Marker position={{ lat: state.currentLocation.lat, lng: state.currentLocation.lng }} /> //default maeker removed */}
+        {/* <Marker position={{ lat: state.currentLocation.lat, lng: state.currentLocation.lng }} /> //default maeker removedq */}
         { 
           // marker for source location.
           route.length >= 2 && 

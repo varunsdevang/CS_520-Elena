@@ -23,7 +23,7 @@ const MetricTable = (props) => {
     const metrics_walkcycle = [ "Distance Travelled: ", "Elevation Gain: ", "Est. Travel Time: ", "Calories: "];
     const metrics_driving = [ "Distance Travelled: ", "Elevation Gain: ", "Est. Travel Time: "];
 
-    const elevationGain= ((props.elevation).toFixed(2));
+    const elevationGain= (((props.elevation)/30).toFixed(2)) + " m";
     const travelDistance=  (((props.distance)/1000).toFixed(2)) + " kms";
     const travelTime= ((props.time).toFixed(2)) + " hr"
 

@@ -6,7 +6,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
 
-const ErrorDialog = (props)=>{
+// ErrorDialog - Dialog component to display error messages.
+const ErrorDialog = (props) => {
     return (
     <Dialog open={props.open} onClose={props.onClose} maxWidth="md">
       <DialogTitle>
@@ -26,6 +27,6 @@ const ErrorDialog = (props)=>{
       </DialogActions>
     </Dialog>
     );
-}
+};
 
 export default ErrorDialog;

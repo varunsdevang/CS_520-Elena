@@ -1,33 +1,34 @@
 import { GoogleMap, Marker, useLoadScript, Polyline } from "@react-google-maps/api";
 import { useEffect, useState } from "react";
 import "../App.css";
+import { GOOGLE_API_KEY } from './Constant';
 
+// Map - uses Google Maps and its features to render the calculated route.
 const Map = (props) => {
+  // route passed from parent.
   const {route} = props;
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60', //Varun API
-    // googleMapsApiKey: 'AIzaSyCGP0U5PmCV0ZYtrlvOGQ3sdaWMi05LQt4'  //Prathiksha API
+    googleMapsApiKey: GOOGLE_API_KEY,
   });
 
   const [state, setState] = useState({
-    center: { lat: 42.3732, lng: -72.519 },
-    currentLocation: { lat: 42.3732, lng: -72.519},
+    // default state - loaded for latlng 0
+    center: { lat: 0, lng: 0 },
+    currentLocation: { lat: 0, lng: 0},
     zoom: 10,
-  })
+  });
 
   useEffect(() => {
+    // load current location.
     navigator.geolocation.getCurrentPosition((position)=>{
-
       setState({...state, currentLocation: {lat: position.coords.latitude, lng: position.coords.longitude}})
-      console.log('position', position);
     })
-  }, [])
+  }, []);
 
   useEffect(() => {
-    //route = route.map((coords) => new google.maps.LatLng(coords.lat, coords.lng))
-    console.log('route', route);
+    // change the zoom level when route changes/updates. (zoom in for better UX)
     setState({...state, zoom: 13, center: route[1]})
-  }, [route])
+  }, [route]);
 
   return (
     <div className="Map">
@@ -39,8 +40,18 @@ const Map = (props) => {
           zoom={state.zoom}
           mapContainerClassName="map-container"
         >
-          <Marker position={{ lat: state.currentLocation.lat, lng: state.currentLocation.lng }} />
-         <Polyline path={route} visible={true}  strokeColor={'#006aff'} strokeOpacity={1.0} strokeWeight={2}></Polyline>
+        {/* <Marker position={{ lat: state.currentLocation.lat, lng: state.currentLocation.lng }} /> //default maeker removed */}
+        { 
+          // marker for source location.
+          route.length >= 2 && 
+          <Marker position={{ lat: route[0].lat, lng: route[0].lng}} />
+        }
+        { 
+          // marker for destination location.
+          route.length >= 2 && 
+          <Marker position={{ lat: route[route.length-1].lat, lng: route[route.length-1].lng}} />
+        }
+        <Polyline path={route} visible={true}  strokeColor={'#006aff'} strokeOpacity={1.0} strokeWeight={2}></Polyline>
         </GoogleMap>
       )}
     </div>

@@ -48,6 +48,7 @@ class A_Star:
         return path
 
 
+<<<<<<< HEAD
 start = "147 Brittany Manor Drive, Amherst, Massachusetts, USA"
 end = "650 N Pleasant St, Amherst, Massachusetts, USA"
 #midpoint_lat,midpoint_lng = ox.geocode(start)
@@ -64,3 +65,21 @@ a = A_Star(G,start,end)
 path = a.shortest_path()
 
 print("Shortest path:", path)
+=======
+# start = "147 Brittany Manor Drive, Amherst, Massachusetts, USA"
+# end = "650 N Pleasant St, Amherst, Massachusetts, USA"
+# #midpoint_lat,midpoint_lng = ox.geocode(start)
+# # start_lat,start_lng = ox.geocode(start)
+# # end_lat,end_lng = ox.geocode(end)
+# G = pkl.load(open("../model/graphs/Amherst_Massachusetts.pkl","rb"))#ox.graph.graph_from_point((midpoint_lat,midpoint_lng),dist=10000)
+
+# # Find the nearest nodes in the graph to the origin and destination
+# # origin_node = ox.distance.nearest_nodes(G, start_lng,start_lat)
+# # destination_node = ox.distance.nearest_nodes(G, end_lng,end_lat)
+# # print(origin_node,destination_node)
+# # Run A* algorithm to find the shortest path
+# a = A_Star(G,start,end)
+# path = a.shortest_path()
+
+# print("Shortest path:", path)
+>>>>>>> a14a6ce71dbb41b5e3f06ce4b7b5bc305c1922a1

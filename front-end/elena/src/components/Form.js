@@ -1,7 +1,6 @@
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import TerrainroundedIcon from '@mui/icons-material/TerrainRounded';
-import Autocomplete from 'react-google-autocomplete';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DriveEtaIcon from '@mui/icons-material/DriveEta';
@@ -14,11 +13,20 @@ import Button from '@mui/material/Button';
 import React, { useState } from 'react';
 import ErrorDialog from './ErrorDialog';
 import MetricTable from './Metrics'; 
-// import Autocomplete from '@mui/material/Autocomplete';
+import Map from './Map'; 
+import CircularProgress from '@mui/material/CircularProgress';
+import Autocomplete from '@mui/material/Autocomplete';
+import { BACKEND_URL } from './Constant';
 
 const NavForm = (props) => {
-    const {setRoute} = props;
+    
+    const {setRoute} = props; // setRoute function from Parent component.
     const [selectedWay, setSelectedWay] = useState(null);
+    const [isLoading, setIsLoading] = useState(false); // boolean for loading state(when blocked by backend api call).
+    const [progress, setProgress] = useState(0);
+    const [options, setOptions] = useState([]); // options for source/destination auto-complete components.
+    
+    // state for form control.
     const [formData, setFormData] = useState({
         source: '',
         destination: '',
@@ -27,152 +35,144 @@ const NavForm = (props) => {
         navType:'',
         errorMessage: '',
         route:[],
-        apiError: false,
+        apiError: false, // error state for error dialog handling.
         submitted: false,
     })
 
+    // handler for transport mode change.
     const handleWayChange = (event, newWay) => {
       setSelectedWay(newWay);
       setFormData({...formData, navType:newWay});
     }
 
+    // handler for Error dialog close.
     const handleDialogClose = () => {
         setFormData({...formData, apiError: false, errorMessage: ''});
     };
 
+    // Form submit handler
+    // fetches route from backend for the given form inputs and sets route for the map to render.
     const handleSubmit = () => {
-        console.log('Submit');
-        console.log(formData);
+        setIsLoading(true); // set the website in loading mode.
+        //console.log('Submit');
+        //console.log(formData);
         setFormData({...formData, apiError: false, submitted: true});
-        
-        fetch(`http://127.0.0.1:5000/get-route?source=${formData["source"]}&destination=${formData["destination"]}`, {
-            method: 'GET',
+
+        const requestBody = {
+            source: formData.source,
+            destination: formData.destination,
+            elevationGain: formData.elevationGain,
+            distConstraint: formData.distConstraint,
+            navType: formData.navType
+          };
+          
+          // REST POST request to the backend.
+          fetch(`${BACKEND_URL}/get-route`, {
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+              'Content-Type': 'application/json'
             },
-            //body: JSON.stringify(formData)
-        })
+            body: JSON.stringify(requestBody)
+          })
         .then(response => response.json())
-        .then(data =>  setFormData({...formData, route:data["result"]})) // set map route from props
+        .then(data =>  setFormData({...formData, route:data["path"]})) // set map route from props
         .catch(error => console.error(error)); // set error window.
        
-        // To error message on failure scenarioss
-       // setFormData({...formData, apiError: true, errorMessage: "this is a error message"})
-       let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
-       console.log(formData["route"])
-        setRoute(formData["route"]);
+        // For debugging...
+       //let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
+       console.log(formData.route);
+       setRoute(formData.route);
+       setIsLoading(false); 
+       
     }
+
+    // method to load place suggestions for the given input. will only be invoked after the input string length of 3 is reached.
+    const getOptions = (inp) => {
+        console.log(BACKEND_URL)
+        fetch(`${BACKEND_URL}/get-place?place=${inp}`, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data =>  {
+            console.log(data["places"]);
+            setOptions([...data["places"]]);
+
+        }) // set map route from props
+        .catch(err => console.log(err))
+    }
+
     return (
+        <div className={`container ${isLoading ? 'blur' : ''}`}>
         <Container>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <TerrainroundedIcon />
                 <h1 className="elenaHeading" style={{ alignItems: "center" }}  > EleNa </h1>
-                <h1><TerrainroundedIcon /></h1>
+                <TerrainroundedIcon />
             </div>
-
-            {/* <div className="textfield-container">
-                <div className="source-textfield">
-                    <TextField id="outlined-basic" label="Source" variant="outlined" value={formData.source} onChange={e => setFormData({...formData, source:e.target.value})}/>
-                </div>
-                <div className="navigation-icon" >
-                    <SwapHorizIcon className="navigation-icon" style={{ fontSize: '3.5rem' }}></SwapHorizIcon>
-                </div>
-                <div className="destination-textfield">
-                    <TextField id="outlined-basic" label="Destination" variant="outlined" value={formData.destination} onChange={e => setFormData({...formData, destination:e.target.value})}/>
-                </div>
-            </div> */}
 
             <div className="textfield-container">
                 <div className="source-textfield">
-                    {/* <Autocomplete
-                    apiKey="AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60"
-                    onPlaceSelected={(place) => {
-                    const source = place.formatted_address;
-                    setFormData({ ...formData, source });
-                    }}
-                    options={{
-                    types: ['geocode'],
-                    }} />
-                    <TextField
-                    id="outlined-basic"
-                    label="Source"
-                    variant="outlined"
-                    value={formData.source}   
-                    /> */}
-
                     <Autocomplete
-                            apiKey="AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60"
-                            onPlaceSelected={(place) => {
-                                const source = place.formatted_address;
-                                setFormData({ ...formData, source });
-                            }}
-                            options={{
-                                types: ['geocode'],
-                            }}
-                            onChange={(e) => setFormData({ ...formData, source: e.target.value })}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    id="outlined-basic"
-                                    label="Source"
-                                    variant="outlined"
-                                    value={formData.source}
-                                />
-                            )}
+                        required
+                        filterOptions={(val) => val}
+                        value={formData.source}
+                        opt
+                        options={options}
+                        onChange={(event, val) => {
+                        setFormData({ ...formData, source: val });
+                        }}
+                        onInputChange={(event, value, cause) => {
+                        if (cause === 'input' && value.length >= 3) {
+                            getOptions(value);
+                        }
+                        }}
+                        getOptionLabel={(val) => val}
+                        renderInput={(vals) => (
+                        <TextField
+                            {...vals}
+                            id="sourceInput"
+                            variant="outlined"
+                            aria-labelledby="sourceLabel"
+                            label="Source"
                         />
-                </div>
-
-                <div className="navigation-icon">
-                <SwapHorizIcon className="navigation-icon" style={{ fontSize: '1.5rem' }} />
+                        )}
+                    />
                 </div>
 
                 <div className="destination-textfield">
-                
-                    {/* <Autocomplete
-                    apiKey="AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60"
-                    onPlaceSelected={(place) => {
-                    const destination = place.formatted_address;
-                    setFormData({ ...formData, destination });
-                    }}
-                    options={{
-                    types: ['geocode'],
-                    }} />
-                    <TextField
-                    id="outlined-basic"
-                    label="Destination"
-                    variant="outlined"
-                    value={formData.destination}
-                    onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                    /> */}
-
                     <Autocomplete
-                            apiKey="AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60"
-                            onPlaceSelected={(place) => {
-                                const destination = place.formatted_address;
-                                setFormData({ ...formData, destination });
-                            }}
-                            options={{
-                                types: ['geocode'],
-                            }}
-                            onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    id="outlined-basic"
-                                    label="Destination"
-                                    variant="outlined"
-                                    value={formData.destination}   
-                                />
-                            )}
+                        required
+                        filterOptions={(val) => val}
+                        value={formData.destination}
+                        opt
+                        options={options}
+                        onChange={(event, val) => {
+                        setFormData({ ...formData, destination: val });
+                        }}
+                        onInputChange={(event, value, cause) => {
+                        if (cause === 'input' && value.length >= 3) {
+                            getOptions(value);
+                        }
+                        }}
+                        getOptionLabel={(val) => val}
+                        renderInput={(vals) => (
+                        <TextField
+                            {...vals}
+                            id="destinationInput"
+                            variant="outlined"
+                            aria-labelledby="destinationLabel"
+                            label="Destination"
                         />
-                    </div>
+                        )}
+                    />
+                </div>
             </div>
 
-
             <div className='slider-element'>
-                <Slider color="primary" defaultValue={0} value={formData.distConstraint} aria-label="slider" valueLabelDisplay="auto" 
+                <Slider color="primary" defaultValue={100}  min={100} max={200} value={formData.distConstraint} aria-label="slider" valueLabelDisplay="auto" 
                 onChange={e=> setFormData({...formData, distConstraint: e.target.value})}/>      
             </div> 
+
             <div style={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
                 <h5> Increase % from minimum distance </h5>
             </div>
@@ -201,28 +201,43 @@ const NavForm = (props) => {
                 onChange={handleWayChange}
                 // onChange={e=> setFormData({...formData, navType:e.target.value})}
                 >
-                <ToggleButton value="walking" ><HikingIcon ></HikingIcon></ToggleButton>
-                <ToggleButton value="cycling" ><DirectionsBikeIcon></DirectionsBikeIcon></ToggleButton>
-                <ToggleButton value="driving" ><DriveEtaIcon ></DriveEtaIcon></ToggleButton>
+                <ToggleButton value="walk" ><HikingIcon ></HikingIcon></ToggleButton>
+                <ToggleButton value="bike" ><DirectionsBikeIcon></DirectionsBikeIcon></ToggleButton>
+                <ToggleButton value="drive" ><DriveEtaIcon ></DriveEtaIcon></ToggleButton>
             </ToggleButtonGroup>
 
             <div className='submit-button' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Button variant="contained" onClick={handleSubmit}>Go!</Button>
+                <Button variant="contained" onClick={handleSubmit} >Go!</Button>
             </div>
-            <ErrorDialog open={formData.apiError} message={formData.errorMessage} onClose={handleDialogClose}>
-            </ErrorDialog>
             
-            {formData.submitted && (
+            
+            {isLoading ? (
+                <div className="loading-overlay">
+                    <CircularProgress />
+                </div>
+                ) : (
+            <>
+            <ErrorDialog open={formData.apiError} message={formData.errorMessage} onClose={handleDialogClose} />
+            
+            { (formData.route).length !== 0 && (
+            <div className='outputParent'>
                 <div className='metrictable-container' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <MetricTable />
+                    <MetricTable />
+                </div>
+
+                {/* <div className='map-container-formjs'>
+                    <Map />
+                </div> */}
+
+                {/* when route is empty (isLoading true), keep form data blurred
+                when route is not empty then pass values returned from route to metrics table and display it
+                parallely with metrics table, load route on map */}
                 </div>
             )}
-
-            {/* <div className='metrictable-container' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <MetricTable />
-            </div> */}
-        </Container>     
+            </>
+            )}
+        </Container>  
+        </div>   
     );
 }
-
 export default NavForm;

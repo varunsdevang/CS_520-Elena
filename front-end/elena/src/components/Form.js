@@ -228,6 +228,7 @@ const NavForm = (props) => {
                 {/* <div className='map-container-formjs'>
                     <Map />
                 </div> */}
+                
                 {/* when route is empty (isLoading true), keep form data blurred
                 when route is not empty then pass values returned from route to metrics table and display it
                 parallely with metrics table, load route on map */}

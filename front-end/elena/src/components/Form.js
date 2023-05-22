@@ -201,9 +201,9 @@ const NavForm = (props) => {
                 onChange={handleWayChange}
                 // onChange={e=> setFormData({...formData, navType:e.target.value})}
                 >
-                <ToggleButton value="walking" ><HikingIcon ></HikingIcon></ToggleButton>
-                <ToggleButton value="cycling" ><DirectionsBikeIcon></DirectionsBikeIcon></ToggleButton>
-                <ToggleButton value="driving" ><DriveEtaIcon ></DriveEtaIcon></ToggleButton>
+                <ToggleButton value="walk" ><HikingIcon ></HikingIcon></ToggleButton>
+                <ToggleButton value="bike" ><DirectionsBikeIcon></DirectionsBikeIcon></ToggleButton>
+                <ToggleButton value="drive" ><DriveEtaIcon ></DriveEtaIcon></ToggleButton>
             </ToggleButtonGroup>
 
             <div className='submit-button' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

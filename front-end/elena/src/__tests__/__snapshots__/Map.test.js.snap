@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Map snapshot should match Matches DOM Snapshot 1`] = `
+<div
+  className="Map"
+>
+  <h1>
+    Loading...
+  </h1>
+</div>
+`;

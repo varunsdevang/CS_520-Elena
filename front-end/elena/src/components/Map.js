@@ -51,7 +51,7 @@ const Map = (props) => {
           route.length >= 2 && 
           <Marker position={{ lat: route[route.length-1].lat, lng: route[route.length-1].lng}} />
         }
-        <Polyline path={route} visible={true}  strokeColor={'#006aff'} strokeOpacity={1.0} strokeWeight={2}></Polyline>
+        <Polyline path={route} visible={true} options={{strokeColor:'#006aff',strokeOpacity:0.7, strokeWeight:4}}></Polyline>
         </GoogleMap>
       )}
     </div>

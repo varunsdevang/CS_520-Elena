@@ -31,10 +31,9 @@ class UtilsForModel:
         graph = ox.add_edge_speeds(graph)
         graph = ox.add_edge_travel_times(graph)
         if mode == "walk":
-            travel_speed = 2.8
+            travel_speed = 4.5
         elif mode == "bike":
-            travel_speed = 10.06
-        if mode != "drive":
-            for u, v, k, data in graph.edges(data=True, keys=True):
-                data['travel_time'] = data['length'] / travel_speed
+            travel_speed = 20
+        for u, v, k, data in graph.edges(data=True, keys=True):
+            data['travel_time'] = (data['length']/1000) / ((travel_speed if (mode=="walk" or mode=="bike") else data['speed_kph']))
         return graph

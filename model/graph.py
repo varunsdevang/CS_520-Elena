@@ -1,7 +1,7 @@
 import osmnx as ox
 import requests
 import time
-from utils import UtilsForModel
+from .utils import UtilsForModel
 import pickle as pkl
 import os
 import logging
@@ -118,6 +118,6 @@ class Graph:
     def get_graph(self):
         return self.graph
 
-G = Graph("147 Brittany Manor Dr, Amherst, Massachusetts, USA", "650 N Pleasant St, Amherst, Massachusetts, USA","drive")
+# G = Graph("147 Brittany Manor Dr, Amherst, Massachusetts, USA", "650 N Pleasant St, Amherst, Massachusetts, USA","drive")
 
 

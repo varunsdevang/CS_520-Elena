@@ -3,10 +3,13 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-// import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+// Metrics Component which will render the route information.
+// Implemented using a mui table.
+// Currently hardcoded to static values. 
+// TODO: use values from props.
 const MetricTable = (props) => {
     const metrics = [ "Distance Travelled: ", "Elevation Gain: ", "Est. Travel Time: ", "Calories: "];
     const elevationGain= "125%";
@@ -35,5 +38,6 @@ const MetricTable = (props) => {
     );
 }
 
+// default export of the file.
 export default MetricTable;
  

@@ -1,7 +1,7 @@
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import TerrainroundedIcon from '@mui/icons-material/TerrainRounded';
-import Autocomplete from 'react-google-autocomplete';
+//import Autocomplete from 'react-google-autocomplete';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DriveEtaIcon from '@mui/icons-material/DriveEta';
@@ -14,11 +14,12 @@ import Button from '@mui/material/Button';
 import React, { useState } from 'react';
 import ErrorDialog from './ErrorDialog';
 import MetricTable from './Metrics'; 
-// import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const NavForm = (props) => {
     const {setRoute} = props;
     const [selectedWay, setSelectedWay] = useState(null);
+    const [options, setOptions] = useState([]);
     const [formData, setFormData] = useState({
         source: '',
         destination: '',
@@ -50,7 +51,6 @@ const NavForm = (props) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            //body: JSON.stringify(formData)
         })
         .then(response => response.json())
         .then(data =>  setFormData({...formData, route:data["result"]})) // set map route from props
@@ -62,6 +62,20 @@ const NavForm = (props) => {
        console.log(formData["route"])
         setRoute(formData["route"]);
     }
+
+    const getOptions = (inp) => {
+        fetch(`http://127.0.0.1:3003/get-place?place=${inp}`, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data =>  {
+            console.log(data["places"]);
+            setOptions([...data["places"]]);
+
+        }) // set map route from props
+        .catch(err => console.log(err))
+    }
+
     return (
         <Container>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -84,42 +98,26 @@ const NavForm = (props) => {
 
             <div className="textfield-container">
                 <div className="source-textfield">
-                    {/* <Autocomplete
-                    apiKey="AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60"
-                    onPlaceSelected={(place) => {
-                    const source = place.formatted_address;
-                    setFormData({ ...formData, source });
-                    }}
-                    options={{
-                    types: ['geocode'],
-                    }} />
-                    <TextField
-                    id="outlined-basic"
-                    label="Source"
-                    variant="outlined"
-                    value={formData.source}   
-                    /> */}
 
-                    <Autocomplete
-                            apiKey="AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60"
-                            onPlaceSelected={(place) => {
-                                const source = place.formatted_address;
-                                setFormData({ ...formData, source });
-                            }}
-                            options={{
-                                types: ['geocode'],
-                            }}
-                            onChange={(e) => setFormData({ ...formData, source: e.target.value })}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    id="outlined-basic"
-                                    label="Source"
-                                    variant="outlined"
-                                    value={formData.source}
-                                />
-                            )}
-                        />
+                <Autocomplete
+                    required
+                    filterOptions={(val) => val}
+                    value={formData.source}
+                    opt
+                    options={options}
+                    onChange={(event, val)=>{
+                        setFormData({ ...formData, source: val });
+                    }}
+                    onInputChange={(event, value, cause) => {
+                        if (cause === 'input') {
+                            if (value.length >= 3) {
+                                getOptions(value);
+                        }}}}
+                    getOptionLabel={(val) => val}
+                    renderInput={(vals) => (
+                    <TextField {...vals}  variant='outlined' />
+                    )}
+                />
                 </div>
 
                 <div className="navigation-icon">
@@ -146,25 +144,24 @@ const NavForm = (props) => {
                     /> */}
 
                     <Autocomplete
-                            apiKey="AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60"
-                            onPlaceSelected={(place) => {
-                                const destination = place.formatted_address;
-                                setFormData({ ...formData, destination });
-                            }}
-                            options={{
-                                types: ['geocode'],
-                            }}
-                            onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    id="outlined-basic"
-                                    label="Destination"
-                                    variant="outlined"
-                                    value={formData.destination}   
-                                />
-                            )}
-                        />
+                        required
+                        filterOptions={(val) => val}
+                        value={formData.destination}
+                        opt
+                        options={options}
+                        onChange={(event, val)=>{
+                            setFormData({ ...formData, destination: val });
+                        }}
+                        onInputChange={(event, value, cause) => {
+                            if (cause === 'input') {
+                                if (value.length >= 3) {
+                                    getOptions(value);
+                            }}}}
+                        getOptionLabel={(val) => val}
+                        renderInput={(vals) => (
+                        <TextField {...vals}  variant='outlined' />
+                        )}
+                    />
                     </div>
             </div>
 

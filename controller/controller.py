@@ -6,9 +6,10 @@ import requests
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath("graph.py"))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
-from model.graph import Graph
-import utils
-import djikistra
+import model.graph
+
+from utils import UtilsController
+from optimal_algorithm_selector import AlgorithmSelector
 
 
 app = Flask(__name__)
@@ -17,6 +18,8 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 app.config['CORS_HEADERS'] = 'Content-Type'
 CORS(app)
+
+utils = UtilsController()
 
 @app.route("/")
 def hello_world():
@@ -34,12 +37,22 @@ def get_route():
     percent_gain = body["distConstraint"]
     elevation = body["elevationGain"]
 
-    model1 = Graph(starting_point,ending_point,mode)
+    model1 = model.graph.Graph(starting_point,ending_point,mode)
     G = model1.get_graph()
-    path_finder = djikistra.Djikistra(G,starting_point,ending_point)
-    nodes_list = path_finder.shortest_path()
+
+    # in case of error, model won't return a graph; hence performing error handling
+    if not G:
+        return jsonify({"errorMessage":"Source and destination are too far away from each other, please select closer places!"})
+
+    # performing main logic
+    path_finder = AlgorithmSelector(G,starting_point,ending_point,elevation)
+    nodes_list, elevation= path_finder.optimal_route()
+
+    # convering list of nodes to list of coordinates
     path_coordinates = utils.convert_nodes_to_coordinates(G,nodes_list)
-    return jsonify({"result":path_coordinates})
+    time_taken = utils.get_path_time(G,nodes_list)
+    distance = utils.get_path_length(G,nodes_list)
+    return jsonify({"path":path_coordinates,"elevation":elevation,"time":time_taken,"distance":distance})
 
 
 @app.route("/get-place", methods = ['GET'])

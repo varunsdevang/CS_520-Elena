@@ -75,7 +75,7 @@ const NavForm = (props) => {
             body: JSON.stringify(requestBody)
           })
         .then(response => response.json())
-        .then(data =>  setFormData({...formData, route:data["result"]})) // set map route from props
+        .then(data =>  setFormData({...formData, route:data["path"]})) // set map route from props
         .catch(error => console.error(error)); // set error window.
        
         // For debugging...
@@ -228,7 +228,7 @@ const NavForm = (props) => {
                 {/* <div className='map-container-formjs'>
                     <Map />
                 </div> */}
-                
+
                 {/* when route is empty (isLoading true), keep form data blurred
                 when route is not empty then pass values returned from route to metrics table and display it
                 parallely with metrics table, load route on map */}

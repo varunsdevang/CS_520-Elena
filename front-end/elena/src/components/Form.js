@@ -21,6 +21,7 @@ const NavForm = (props) => {
     const {setRoute} = props;
     const [selectedWay, setSelectedWay] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
     const [formData, setFormData] = useState({
         source: '',
         destination: '',
@@ -50,25 +51,29 @@ const NavForm = (props) => {
         setFormData({...formData, apiError: false, submitted: true});
 
         
-        fetch(`http://127.0.0.1:5000/get-route?source=${formData["source"]}&destination=${formData["destination"]}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            //body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data =>  { setFormData({...formData, route:data["result"]}); setIsLoading(false);}) // set map route from props
-        .catch(error => {console.error(error); setIsLoading(false);} ); // set error window.
+        // fetch(`http://127.0.0.1:5000/get-route?source=${formData["source"]}&destination=${formData["destination"]}`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     //body: JSON.stringify(formData)
+        // })
+        // .then(response => response.json())
+        // .then(data =>  { setFormData({...formData, route:data["result"]}); setIsLoading(false);}) // set map route from props
+        // .catch(error => {console.error(error); setIsLoading(false);} ); // set error window.
+
+        // console.log(formData["route"])
+        // setRoute(formData["route"]);
+        //setIsLoading(false)
        
         // To error message on failure scenarioss
        // setFormData({...formData, apiError: true, errorMessage: "this is a error message"})
-       //let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
-       //setRoute(route);
-       console.log(formData["route"])
-        setRoute(formData["route"]);
+       let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
+       setRoute(route);
+
     }
     return (
+        <div className={`container ${isLoading ? 'blur' : ''}`}>
         <Container>
             
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -175,7 +180,6 @@ const NavForm = (props) => {
                     </div>
             </div>
 
-
             <div className='slider-element'>
                 <Slider color="primary" defaultValue={0} value={formData.distConstraint} aria-label="slider" valueLabelDisplay="auto" 
                 onChange={e=> setFormData({...formData, distConstraint: e.target.value})}/>      
@@ -218,7 +222,8 @@ const NavForm = (props) => {
             </div>
             
             {isLoading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                // <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div className="loading-overlay">
                     <CircularProgress />
                 </div>
                 ) : (
@@ -235,7 +240,8 @@ const NavForm = (props) => {
             </div> */}
             </>
                 )}
-        </Container>     
+        </Container>  
+        </div>   
     );
 }
 

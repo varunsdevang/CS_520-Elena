@@ -14,15 +14,15 @@ function App() {
   }
 
   return (
-   
-    <div className="app-container">
-      <div className="form-container">
-      <NavForm setRoute={setRoute}/>
+    
+      <div className="app-container">
+        <div className="form-container">
+        <NavForm setRoute={setRoute}/>
+        </div>
+        <div className="map-container">
+          <Map route={state.route}/>
+        </div>
       </div>
-      <div className="map-container">
-        <Map route={state.route}/>
-      </div>
-    </div>
   );
 }
 

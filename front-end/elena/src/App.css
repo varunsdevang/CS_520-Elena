@@ -54,3 +54,20 @@
   margin-left: 20px;
   margin-right: 20px;
 }
+
+.blur {
+  filter: blur(2.5px);
+  pointer-events: none; 
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(197, 219, 237, 0.799); /* Set a semi-transparent background color for the loading overlay */
+}

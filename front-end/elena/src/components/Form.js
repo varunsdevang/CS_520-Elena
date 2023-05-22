@@ -82,22 +82,28 @@ const NavForm = (props) => {
             body: JSON.stringify(requestBody)
           })
         .then(response => response.json())
-        .then(data =>  { setFormData({...formData, route:data["path"]}) ;
-         setRouteData({...routeData, elevationReturned:data.elevation, distanceReturned:data.distance, timeReturned: data.time }) })
+        .then(data =>  { 
+            setFormData({...formData, route:data.path}) ;
+            setRouteData({...routeData, elevationReturned:data.elevation, distanceReturned:data.distance, timeReturned: data.time });
+            setRoute(data.path);
+            setIsLoading(false); 
+        })
         
          // set map route from props
         //.then(data =>  setFormData({...formData, route:data["path"] })) // set map route from props       
-        .catch(error => console.error(error)); // set error window.
+        .catch(error => {
+            console.error(error);
+            setIsLoading(false);
+            setFormData({...formData, apiError:true, errorMessage: "Please try again later"});
+        }); // set error window.
        
         // For debugging...
-       //let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
-    //    console.log(data)
+        // let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
+        // console.log(data)
         console.log(routeData.elevationReturned);
         console.log(routeData.distanceReturned);
         console.log(routeData.timeReturned);
         console.log(formData.route);
-        setRoute(formData.route);
-        setIsLoading(false); 
        
     }
 

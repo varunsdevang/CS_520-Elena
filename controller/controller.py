@@ -22,15 +22,19 @@ CORS(app)
 def hello_world():
     return "<p>Hello, World!</p>"
 
-@app.route("/get-route", methods = ['GET'])
+@app.route("/get-route", methods = ['POST'])
 def get_route():
-    starting_point = request.args.get("source")
-    ending_point = request.args.get("destination")
-    mode = "driving"
-    percent_gain = "125"
-    elevation = "max"
+    
+    body=request.get_json()
+    print("body  ===  ", body)
+    
+    starting_point = body["source"]
+    ending_point = body["destination"]
+    mode = body["navType"]
+    percent_gain = body["distConstraint"]
+    elevation = body["elevationGain"]
 
-    model1 = Graph(starting_point,ending_point,"dr")
+    model1 = Graph(starting_point,ending_point,mode)
     G = model1.get_graph()
     path_finder = djikistra.Djikistra(G,starting_point,ending_point)
     nodes_list = path_finder.shortest_path()

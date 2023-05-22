@@ -13,6 +13,7 @@ import Button from '@mui/material/Button';
 import React, { useState } from 'react';
 import ErrorDialog from './ErrorDialog';
 import MetricTable from './Metrics'; 
+import Map from './Map'; 
 import CircularProgress from '@mui/material/CircularProgress';
 import Autocomplete from '@mui/material/Autocomplete';
 import { BACKEND_URL } from './Constant';
@@ -57,19 +58,31 @@ const NavForm = (props) => {
         //console.log(formData);
         setFormData({...formData, apiError: false, submitted: true});
 
-        // REST GET request to the backend.
-        fetch(`${BACKEND_URL}/get-route?source=${formData["source"]}&destination=${formData["destination"]}`, {
-            method: 'GET',
-        })
+        const requestBody = {
+            source: formData.source,
+            destination: formData.destination,
+            elevationGain: formData.elevationGain,
+            distConstraint: formData.distConstraint,
+            navType: formData.navType
+          };
+          
+          // REST POST request to the backend.
+          fetch(`${BACKEND_URL}/get-route`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+          })
         .then(response => response.json())
-        .then(data =>  setFormData({...formData, route:data["result"]})) // set map route from props
+        .then(data =>  setFormData({...formData, route:data["path"]})) // set map route from props
         .catch(error => console.error(error)); // set error window.
-        setIsLoading(false); 
        
         // For debugging...
        //let route = [{lat: 42.395080, lng: -72.526807},{lat: 42.386089,lng:  -72.522535},{ lat: 42.381570,lng: -72.519363}]
        console.log(formData.route);
        setRoute(formData.route);
+       setIsLoading(false); 
        
     }
 
@@ -153,56 +166,6 @@ const NavForm = (props) => {
                         )}
                     />
                 </div>
-
-                {/* <div className="source-textfield">
-
-                <Autocomplete
-                    required
-                    filterOptions={(val) => val}
-                    value={formData.source}
-                    opt
-                    options={options}
-                    onChange={(event, val)=>{
-                        setFormData({ ...formData, source: val });
-                    }}
-                    onInputChange={(event, value, cause) => {
-                        if (cause === 'input') {
-                            if (value.length >= 3) {
-                                getOptions(value);
-                        }}}}
-                    getOptionLabel={(val) => val}
-                    renderInput={(vals) => (
-                    <TextField {...vals}  variant='outlined' />
-                    )}
-                />
-                </div>
-
-                <div className="navigation-icon">
-                <SwapHorizIcon className="navigation-icon" style={{ fontSize: '1.5rem' }} />
-                </div>
-
-                <div className="destination-textfield">
-
-                    <Autocomplete
-                        required
-                        filterOptions={(val) => val}
-                        value={formData.destination}
-                        opt
-                        options={options}
-                        onChange={(event, val)=>{
-                            setFormData({ ...formData, destination: val });
-                        }}
-                        onInputChange={(event, value, cause) => {
-                            if (cause === 'input') {
-                                if (value.length >= 3) {
-                                    getOptions(value);
-                            }}}}
-                        getOptionLabel={(val) => val}
-                        renderInput={(vals) => (
-                        <TextField {...vals}  variant='outlined' />
-                        )}
-                    />
-                </div> */}
             </div>
 
             <div className='slider-element'>
@@ -238,9 +201,9 @@ const NavForm = (props) => {
                 onChange={handleWayChange}
                 // onChange={e=> setFormData({...formData, navType:e.target.value})}
                 >
-                <ToggleButton value="walking" ><HikingIcon ></HikingIcon></ToggleButton>
-                <ToggleButton value="cycling" ><DirectionsBikeIcon></DirectionsBikeIcon></ToggleButton>
-                <ToggleButton value="driving" ><DriveEtaIcon ></DriveEtaIcon></ToggleButton>
+                <ToggleButton value="walk" ><HikingIcon ></HikingIcon></ToggleButton>
+                <ToggleButton value="bike" ><DirectionsBikeIcon></DirectionsBikeIcon></ToggleButton>
+                <ToggleButton value="drive" ><DriveEtaIcon ></DriveEtaIcon></ToggleButton>
             </ToggleButtonGroup>
 
             <div className='submit-button' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
@@ -256,9 +219,19 @@ const NavForm = (props) => {
             <>
             <ErrorDialog open={formData.apiError} message={formData.errorMessage} onClose={handleDialogClose} />
             
-            {formData.submitted && (
+            { (formData.route).length !== 0 && (
+            <div className='outputParent'>
                 <div className='metrictable-container' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <MetricTable />
+                    <MetricTable />
+                </div>
+
+                {/* <div className='map-container-formjs'>
+                    <Map />
+                </div> */}
+
+                {/* when route is empty (isLoading true), keep form data blurred
+                when route is not empty then pass values returned from route to metrics table and display it
+                parallely with metrics table, load route on map */}
                 </div>
             )}
             </>

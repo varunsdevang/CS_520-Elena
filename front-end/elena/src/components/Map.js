@@ -12,9 +12,9 @@ const Map = (props) => {
   });
 
   const [state, setState] = useState({
-    // default state - loaded for amherst
-    center: { lat: 42.3732, lng: -72.519 },
-    currentLocation: { lat: 42.3732, lng: -72.519},
+    // default state - loaded for latlng 0
+    center: { lat: 0, lng: 0 },
+    currentLocation: { lat: 0, lng: 0},
     zoom: 10,
   });
 
@@ -40,7 +40,7 @@ const Map = (props) => {
           zoom={state.zoom}
           mapContainerClassName="map-container"
         >
-        <Marker position={{ lat: state.currentLocation.lat, lng: state.currentLocation.lng }} />
+        {/* <Marker position={{ lat: state.currentLocation.lat, lng: state.currentLocation.lng }} /> //default maeker removed */}
         { 
           // marker for source location.
           route.length >= 2 && 

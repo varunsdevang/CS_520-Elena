@@ -22,6 +22,7 @@ class A_Star:
         return nx.shortest_path_length(self.graph, node1, node2, weight="length")
 
     def shortest_path(self):
+        print("byeeeeees")
         nodes = []
         heapq.heappush(nodes, (0,self.starting_node))
 

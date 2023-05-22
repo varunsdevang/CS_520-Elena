@@ -1,22 +1,14 @@
 import osmnx as ox
 import heapq
 import pickle as pkl
+from utils import UtilsController
 
 class Djikistra:
 	def __init__(self,G,starting_node,ending_node):
 		self.graph = G
 		self.starting_node = starting_node
 		self.ending_node = ending_node
-	
-	def get_path_length(self,path):
-		node_pointer = 1
-		prev_node_pointer = 0
-		length = self.graph.edges[path[prev_node_pointer],path[node_pointer],0]["length"]
-		while(node_pointer<len(path)-1):
-			prev_node_pointer+=1
-			node_pointer+=1
-			length+=self.graph.edges[path[prev_node_pointer],path[node_pointer],0]["length"]
-		return length
+		self.utils = UtilsController()
 	
 	def elevation_diff(self,node_a,node_b):
 		return abs(self.graph.nodes[node_b]["elevation"] - self.graph.nodes[node_a]["elevation"])
@@ -68,7 +60,7 @@ class Djikistra:
 	def path_with_elevation_gain(self, elevation_condition, percent_inc_param):
 		
 		shortest_path, shortest_path_weight_record = self.shortest_path()
-		shortest_path_length = self.get_path_length(shortest_path)
+		shortest_path_length = self.utils.get_path_length(self.graph,shortest_path)
 
 		nodes = []
 		heapq.heappush(nodes, (0,self.starting_node))
@@ -98,7 +90,7 @@ class Djikistra:
 						heapq.heappush(nodes, (elevation_record[end_b], end_b))
 
 		elevation_path = self.return_path(closest_node_record)
-		elevation_path_length = self.get_path_length(elevation_path)
+		elevation_path_length = self.utils.get_path_length(self.graph,elevation_path)
 
 		#print(shortest_path_length, elevation_path_length)
 		if(elevation_path_length<percent_inc_param*shortest_path_length/100):

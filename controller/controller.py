@@ -25,12 +25,14 @@ def hello_world():
 def get_route():
     starting_point = request.args.get("source")
     ending_point = request.args.get("destination")
-    mode = "driving"
+    mode = "drive"
     percent_gain = "125"
     elevation = "max"
 
     model1 = model.graph.Graph(starting_point,ending_point,"dr")
     G = model1.get_graph()
+    if not G:
+        return jsonify({"errorMessage":"Source and destination are too far away from each other, please select closer places!"})
     path_finder = djikistra.Djikistra(G,starting_point,ending_point)
     nodes_list = path_finder.shortest_path()
     path_coordinates = utils.convert_nodes_to_coordinates(G,nodes_list)

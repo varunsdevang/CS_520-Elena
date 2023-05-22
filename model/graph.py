@@ -105,6 +105,6 @@ class Graph:
     def get_graph(self):
         return self.graph
 
-G = Graph("151 Brittany Manor Dr, Amherst, Massachusetts, USA", "650 N Pleasant St, Amherst, Massachusetts, USA","drive")
+G = Graph("Stop & Shop, 440 Russell Street Hadley, Massachusetts, USA", "650 N Pleasant St, Amherst, Massachusetts, USA","drive")
 
 

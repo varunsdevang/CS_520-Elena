@@ -92,11 +92,67 @@ const NavForm = (props) => {
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <TerrainroundedIcon />
                 <h1 className="elenaHeading" style={{ alignItems: "center" }}  > EleNa </h1>
-                <h1><TerrainroundedIcon /></h1>
+                <TerrainroundedIcon />
             </div>
 
             <div className="textfield-container">
                 <div className="source-textfield">
+                    <Autocomplete
+                        required
+                        filterOptions={(val) => val}
+                        value={formData.source}
+                        opt
+                        options={options}
+                        onChange={(event, val) => {
+                        setFormData({ ...formData, source: val });
+                        }}
+                        onInputChange={(event, value, cause) => {
+                        if (cause === 'input' && value.length >= 3) {
+                            getOptions(value);
+                        }
+                        }}
+                        getOptionLabel={(val) => val}
+                        renderInput={(vals) => (
+                        <TextField
+                            {...vals}
+                            id="sourceInput"
+                            variant="outlined"
+                            aria-labelledby="sourceLabel"
+                            label="Source"
+                        />
+                        )}
+                    />
+                </div>
+
+                <div className="destination-textfield">
+                    <Autocomplete
+                        required
+                        filterOptions={(val) => val}
+                        value={formData.destination}
+                        opt
+                        options={options}
+                        onChange={(event, val) => {
+                        setFormData({ ...formData, destination: val });
+                        }}
+                        onInputChange={(event, value, cause) => {
+                        if (cause === 'input' && value.length >= 3) {
+                            getOptions(value);
+                        }
+                        }}
+                        getOptionLabel={(val) => val}
+                        renderInput={(vals) => (
+                        <TextField
+                            {...vals}
+                            id="destinationInput"
+                            variant="outlined"
+                            aria-labelledby="destinationLabel"
+                            label="Destination"
+                        />
+                        )}
+                    />
+                </div>
+
+                {/* <div className="source-textfield">
 
                 <Autocomplete
                     required
@@ -144,11 +200,11 @@ const NavForm = (props) => {
                         <TextField {...vals}  variant='outlined' />
                         )}
                     />
-                    </div>
+                </div> */}
             </div>
 
             <div className='slider-element'>
-                <Slider color="primary" defaultValue={0} value={formData.distConstraint} aria-label="slider" valueLabelDisplay="auto" 
+                <Slider color="primary" defaultValue={100}  min={100} max={200} value={formData.distConstraint} aria-label="slider" valueLabelDisplay="auto" 
                 onChange={e=> setFormData({...formData, distConstraint: e.target.value})}/>      
             </div> 
 
@@ -208,5 +264,4 @@ const NavForm = (props) => {
         </div>   
     );
 }
-
 export default NavForm;

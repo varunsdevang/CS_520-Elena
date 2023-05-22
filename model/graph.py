@@ -1,7 +1,7 @@
 import osmnx as ox
 import requests
 import time
-import utils
+from .utils import *
 import pickle as pkl
 import os
 import logging
@@ -21,7 +21,7 @@ class Graph:
 
     def generate_graph(self):
         logging.info(f"Checking for same area (city,state) match for source and destination to plot graph for the entire city")
-        area_match = utils.checkForSourceAndDestCity(self.start_point,self.end_point)
+        area_match = checkForSourceAndDestCity(self.start_point,self.end_point)
         same_area = False
         graphs_available_in_cache = os.listdir(graphs)
         if(area_match["result"]):

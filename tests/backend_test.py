@@ -4,38 +4,64 @@ import requests,json
 # import the MyHandler class from the main script
 
 class TestElenaService(unittest.TestCase):
-
-    '''
-    Validate location using Google Directions Service for querying ground-truth
-    Validate the Location 
-    Validate the Test Location
-    Path Elevation Validation
-    Validate path length Validate coordinates
-    Validate Find the closest node in the graph
-    Validate the Dijikstra Path Finding Algorithm
-    Validate the A* Path Finding Algorithm
-
-    '''
-
-    def validate_location_test(self):
-        '''
-        Validate location using Google Directions Service for querying ground-truth
-        '''
-        origin='360 Huntington Ave, Boston, Massachusetts, USA'
+    def test_validate_route__success(self):
+        
+        #Validate location using Google Directions Service for querying ground-truth
+        #print("hi")
+        origin='147 Brittany Manor Dr, Amherst, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
-        elevation_type='100' #max
-        percentage=100
-        url = f"https://maps.googleapis.com/maps/api/directions/json?origin={origin}&destination={destination}&elevation_type={elevation_type}&percentage={percentage}"
-        response = requests.get(url)
+        elevation_type=100 #max
+        percentage=125
+        navType="drive"
+        
+        body={
+            'source': origin,
+            'destination': destination,
+            'elevationGain': elevation_type,
+            'distConstraint': percentage,
+            'navType': navType
+          }
+        url ='http://127.0.0.1:5000/get-route'
+        response = requests.post(url,json=body)
+        print(response)
         data = response.json()
+        print("data:",data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("result",data)
+        self.assertIn("path",data)
+    
+
+    def test_validate_route__failure(self):
+        
+        #Validate location using Google Directions Service for querying ground-truth
+        #print("hi")
+        origin='147 Brittany Manor Dr, Amherst, Massachusetts, USA'
+        destination='2415 Ellendale Pl, Los Angeles, CA'
+        elevation_type=100 #max
+        percentage=125
+        navType="drive"
+        
+        body={
+            'source': origin,
+            'destination': destination,
+            'elevationGain': elevation_type,
+            'distConstraint': percentage,
+            'navType': navType
+          }
+        url ='http://127.0.0.1:5000/get-route'
+        response = requests.post(url,json=body)
+        print(response)
+        data = response.json()
+        print("data:",data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("errorMessage",data)
+    
+    
 
         
-    def elevation_validation_test(self):
-        '''
-        Path Elevation Validation
-        '''
+    '''def elevation_validation_test(self):
+        
+        #Path Elevation Validation
+        
         origin='360 Huntington Ave, Boston, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
         elevation_type='100' #max
@@ -49,9 +75,9 @@ class TestElenaService(unittest.TestCase):
      
 
     def validate_pathlength_test(self):
-        '''
-        Validate path length Validate coordinates
-        '''
+        
+        #Validate path length Validate coordinates
+        
         origin='360 Huntington Ave, Boston, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
         elevation_type='100' #max
@@ -64,9 +90,9 @@ class TestElenaService(unittest.TestCase):
         self.assertEqual(pathlength_expected,data['pathlength'])
 
     def valid_dijikstra_algo_max_test(self):
-        '''
-        validating the dijikstra algorithm for max elevation 
-        '''
+        
+        #validating the dijikstra algorithm for max elevation 
+        
         origin='360 Huntington Ave, Boston, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
         elevation_type='100' #max
@@ -81,9 +107,9 @@ class TestElenaService(unittest.TestCase):
         self.assertEqual(expectedroute,actualroute)
 
     def test_valid_dijikstra_algo_min(self):
-        '''
-        validating the dijikstra algorithm for min elevation 
-        '''
+        
+        #validating the dijikstra algorithm for min elevation 
+        
 
         origin='360 Huntington Ave, Boston, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
@@ -100,9 +126,9 @@ class TestElenaService(unittest.TestCase):
         
     def test_valid_astar_algo_max(self):
 
-        '''
-        validating the Astar algorithm for max elevation 
-        '''
+        
+        #validating the Astar algorithm for max elevation 
+        
 
         origin='360 Huntington Ave, Boston, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
@@ -118,9 +144,9 @@ class TestElenaService(unittest.TestCase):
         self.assertEqual(expectedroute,actualroute)
 
     def test_valid_astar_algo_min(self):
-        '''
-        validating the dijikstra algorithm for min elevation 
-        '''
+        
+        #validating the dijikstra algorithm for min elevation 
+        
 
         origin='360 Huntington Ave, Boston, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
@@ -133,7 +159,7 @@ class TestElenaService(unittest.TestCase):
         expectedroute=          #put the route
         actualroute,actual_pathlength=getshortestpath_astar(origin,destination,elevation_type,percentage)
         self.assertEqual(expected_Pathlength,actual_pathlength)
-        self.assertEqual(expectedroute,actualroute)
+        self.assertEqual(expectedroute,actualroute)'''
 
     
 

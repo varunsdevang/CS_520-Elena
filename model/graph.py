@@ -1,10 +1,12 @@
 import osmnx as ox
+import networkx as nx
 import requests
 import time
 from .utils import UtilsForModel
 import pickle as pkl
 import os
 import logging
+from geopy.distance import geodesic
 
 graphs_folder = "../model/graphs/"
 extension = ".pkl"
@@ -64,8 +66,10 @@ class Graph:
         else:
             start_lat,start_lng = ox.geocode(self.start_point)
             end_lat,end_lng = ox.geocode(self.end_point)
-            distance = ox.eucledian_distance(start_lat,start_lng,end_lat,end_lng)
-            if distance<10000:
+            #distance = ox.distance.euclidean_dist_vec(start_lat,start_lng,end_lat,end_lng)
+            distance=geodesic((start_lat,start_lng),(end_lat,end_lng) ).km
+            print("distance:",distance)
+            if distance<10:
                 logging.info(f"Source and destination aren't in the same area, generating new graph within 10km radius...")
                 self.graph = ox.graph.graph_from_point((start_lat,start_lng),dist=10000)
             else:
@@ -73,7 +77,8 @@ class Graph:
                 self.graph = None  
 
     def save_graph(self):
-        pkl.dump(self.graph, open(self.file_name, "wb"))      
+        if self.file_name:
+            pkl.dump(self.graph, open(self.file_name, "wb"))      
     
     def add_elevation_data(self):
         logging.info(f"Adding elevation data by making calls to OpenTopo...")

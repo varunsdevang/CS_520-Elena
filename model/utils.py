@@ -7,6 +7,8 @@ class UtilsForModel:
         destination_address = end.split(",")
         source_city,source_state = source_address[-3].strip(),source_address[-2].strip()
         dest_city,dest_state = destination_address[-3].strip(),destination_address[-2].strip()
+        city_match = False
+        state_match = False
         if(source_state==dest_state):
             state_match = True
             if(source_city==dest_city):

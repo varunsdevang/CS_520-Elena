@@ -42,7 +42,7 @@ def get_route():
 
     # in case of error, model won't return a graph; hence performing error handling
     if not G:
-        return jsonify({"errorMessage":"Source and destination are too far away from each other, please select closer places!"})
+        return jsonify({"errorMessage":"Source and destination are too far away from each other, please select closer places!"}),400
 
     # performing main logic
     path_finder = AlgorithmSelector(G,starting_point,ending_point,elevation)

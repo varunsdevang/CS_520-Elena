@@ -3,11 +3,10 @@ import heapq
 import pickle as pkl
 
 class Djikistra:
-	def __init__(self,G,start,end):
+	def __init__(self,G,starting_node,ending_node):
 		self.graph = G
-		self.start = start
-		self.end = end
-		self.get_nodes()
+		self.starting_node = starting_node
+		self.ending_node = ending_node
 	
 	def get_path_length(self,path):
 		node_pointer = 1
@@ -20,13 +19,7 @@ class Djikistra:
 		return length
 	
 	def elevation_diff(self,node_a,node_b):
-		return self.graph.nodes[node_b]["elevation"] - self.graph.nodes[node_a]["elevation"]
-
-	def get_nodes(self):
-		start_lat,start_lng = ox.geocode(self.start)
-		end_lat,end_lng = ox.geocode(self.end)
-		self.starting_node = ox.nearest_nodes(self.graph,start_lng,start_lat)
-		self.ending_node = ox.nearest_nodes(self.graph,end_lng,end_lat)
+		return abs(self.graph.nodes[node_b]["elevation"] - self.graph.nodes[node_a]["elevation"])
 
 	def return_path(self,closest_nodes):
 		path = [self.ending_node]
@@ -61,7 +54,6 @@ class Djikistra:
 	
 
 	def elevation_comparison_condition(self, current, updated, condition):
-		print("yaaay")
 		if condition=="max":
 			if updated>current:
 				return True
@@ -75,7 +67,7 @@ class Djikistra:
 	
 	def path_with_elevation_gain(self, elevation_condition, percent_inc_param):
 		
-		shortest_path, shortest_path_cost_record = self.shortest_path()
+		shortest_path, shortest_path_weight_record = self.shortest_path()
 		shortest_path_length = self.get_path_length(shortest_path)
 
 		nodes = []
@@ -98,16 +90,8 @@ class Djikistra:
 				elevation_a_b = self.elevation_diff(end_a, end_b)
 				new_route_elevation = elevation_record[end_a] + elevation_a_b 
 				if ((end_b not in elevation_record) or self.elevation_comparison_condition(elevation_record[end_b],new_route_elevation,elevation_condition)):
-					new_route_length = cost_record[end_a] + path_info["length"]
-					#print(cost_record)
-					if((end_b not in elevation_record) or (new_route_length<=(percent_inc_param*shortest_path_record[end_b]/100))):
-						elevation_record[end_b] = new_route_elevation
-						closest_node_record[end_b] = end_a
-						cost_record[end_b] = new_route_length
-					else:
-						print("here")
-						continue
-					
+					elevation_record[end_b] = new_route_elevation
+					closest_node_record[end_b] = end_a
 					if elevation_condition=="max":
 						heapq.heappush(nodes, (-1*elevation_record[end_b], end_b))
 					else:
@@ -116,19 +100,19 @@ class Djikistra:
 		elevation_path = self.return_path(closest_node_record)
 		elevation_path_length = self.get_path_length(elevation_path)
 
-		print(shortest_path_length, elevation_path_length)
+		#print(shortest_path_length, elevation_path_length)
 		if(elevation_path_length<percent_inc_param*shortest_path_length/100):
 			return elevation_path
 		return shortest_path
 	
 
 
-start = "115 Brittany Manor Dr, Amherst, Massachusetts, USA"
-end = "650 N Pleasant St, Amherst, Massachusetts, USA"
-#end = "151 Brittany Manor Dr, Amherst, Massachusetts, USA"
-# midpoint_lat,midpoint_lng = ox.geocode(start)
-# G = ox.graph.graph_from_point((midpoint_lat,midpoint_lng),dist=10000)
-G = pkl.load(open("../model/graphs/Amherst_Massachusetts.pkl","rb"))
-d = Djikistra(G,start,end)
-print(d.starting_node,d.ending_node)
-print(d.path_with_elevation_gain("max",125))
+# start = "115 Brittany Manor Dr, Amherst, Massachusetts, USA"
+# end = "650 N Pleasant St, Amherst, Massachusetts, USA"
+# #end = "151 Brittany Manor Dr, Amherst, Massachusetts, USA"
+# # midpoint_lat,midpoint_lng = ox.geocode(start)
+# # G = ox.graph.graph_from_point((midpoint_lat,midpoint_lng),dist=10000)
+# G = pkl.load(open("../model/graphs/Amherst_Massachusetts.pkl","rb"))
+# d = Djikistra(G,start,end)
+# print(d.starting_node,d.ending_node)
+# print(d.path_with_elevation_gain("min",125))

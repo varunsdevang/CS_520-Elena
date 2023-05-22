@@ -17,7 +17,7 @@ class TestElenaService(unittest.TestCase):
 
     '''
 
-    def test_validate_location(self):
+    def validate_location_test(self):
         '''
         Validate location using Google Directions Service for querying ground-truth
         '''
@@ -32,7 +32,7 @@ class TestElenaService(unittest.TestCase):
         self.assertIn("result",data)
 
         
-    def elevation_validation(self):
+    def elevation_validation_test(self):
         '''
         Path Elevation Validation
         '''
@@ -48,7 +48,7 @@ class TestElenaService(unittest.TestCase):
         self.assertEqual(elevation_expected,data['elevation'])
      
 
-    def validate_pathlength(self):
+    def validate_pathlength_test(self):
         '''
         Validate path length Validate coordinates
         '''
@@ -63,7 +63,10 @@ class TestElenaService(unittest.TestCase):
         self.assertIn("pathlength",data)
         self.assertEqual(pathlength_expected,data['pathlength'])
 
-    def test_valid_dijikstra_algo_max(self):
+    def valid_dijikstra_algo_max_test(self):
+        '''
+        validating the dijikstra algorithm for max elevation 
+        '''
         origin='360 Huntington Ave, Boston, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
         elevation_type='100' #max
@@ -78,6 +81,10 @@ class TestElenaService(unittest.TestCase):
         self.assertEqual(expectedroute,actualroute)
 
     def test_valid_dijikstra_algo_min(self):
+        '''
+        validating the dijikstra algorithm for min elevation 
+        '''
+
         origin='360 Huntington Ave, Boston, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
         elevation_type='0' #max
@@ -92,6 +99,11 @@ class TestElenaService(unittest.TestCase):
         self.assertEqual(expectedroute,actualroute)
         
     def test_valid_astar_algo_max(self):
+
+        '''
+        validating the Astar algorithm for max elevation 
+        '''
+
         origin='360 Huntington Ave, Boston, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
         elevation_type='100' #max
@@ -106,6 +118,10 @@ class TestElenaService(unittest.TestCase):
         self.assertEqual(expectedroute,actualroute)
 
     def test_valid_astar_algo_min(self):
+        '''
+        validating the dijikstra algorithm for min elevation 
+        '''
+
         origin='360 Huntington Ave, Boston, Massachusetts, USA'
         destination='650 N Pleasant St, Amherst, Massachusetts, USA'
         elevation_type='0' #max

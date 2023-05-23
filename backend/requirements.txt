@@ -1,0 +1,6 @@
+osmnx
+flask
+pickle
+requests
+flask_cors
+networkx

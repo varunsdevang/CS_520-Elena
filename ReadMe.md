@@ -50,9 +50,9 @@ To execute the project locally, follow the instructions below
 
 ### Installation
 
-- For backend, please read the backend readme in root/backend/README.md
+- For backend, please read the backend readme in [root/backend/README.md](./backend/README.md)
 
-- For front-end, please read the front-end readme in root/frontend/README.md
+- For front-end, please read the front-end readme in [root/frontend/README.md](./frontend/README.md)
 
 
 ## Components

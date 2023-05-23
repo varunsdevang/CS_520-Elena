@@ -18,4 +18,4 @@ mode_and_speed_mapping = {
 
 valid_modes = mode_and_speed_mapping.keys()
 valid_elevation = ["max","min"]
-autcomplete_url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input={}&key=AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60"
+autocomplete_url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input={}&key=AIzaSyB7szZ54ue7G5mZX-R0yDKo6aw2vvxzL60"

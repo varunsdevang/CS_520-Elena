@@ -57,7 +57,7 @@ class UtilsForModel:
     def return_graph_file(self,args):
         # forming the file name
         file_name = "_".join(args) + constants.extension
-        
+        print(file_name)
         # getting absolute directory path
         file_path = os.path.join(constants.graphs_folder,file_name)
         

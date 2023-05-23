@@ -132,7 +132,7 @@ class Graph:
             # batching the nodes to be sent to the api
             lower_index = calls*100
             higher_index = min((calls+1)*100,n)
-            logging.info(f"Making batch calls to OpenTopo from {low} to {high}", lower_index, higher_index)
+            logging.info(f"Making batch calls to OpenTopo from {lower_index} to {higher_index}")
             node_coordinates = list(graph_data.items())[lower_index:higher_index]
             
             # formatting the coordinates as needed by the api -- lat1,lng1|lat2,lng2|lat3,lng3...

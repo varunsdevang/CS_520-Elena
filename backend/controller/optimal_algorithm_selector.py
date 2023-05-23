@@ -34,7 +34,7 @@ class AlgorithmSelector:
         print("with elevation :",optimal_path)
         djikistra_elevation = self.utils.calculate_path_elevation(self.graph, optimal_path)
         # calculating elevation gain with respect to reference path
-        elevation_gain = djikistra_elevation/a_star_elevation*100
+        elevation_gain = djikistra_elevation
         return optimal_path, elevation_gain
 
 

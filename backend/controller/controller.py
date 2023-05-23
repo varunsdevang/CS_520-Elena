@@ -43,6 +43,7 @@ def get_route():
         
 
     if not validation_helper.validate_input_for_route(body):
+        print(utils.return_error_response("Source and destination are too far away from each other, please select closer places!"))
         logging.error("Parameters passed to the api are incorrect!!")
         logging.error("Please recheck and try again!")
         return utils.return_error_response("Wrong params provided!")
@@ -53,6 +54,7 @@ def get_route():
 
     # in case of error, model won't return a graph; hence performing error handling
     if not G:
+        print(utils.return_error_response("Source and destination are too far away from each other, please select closer places!"))
         return utils.return_error_response("Source and destination are too far away from each other, please select closer places!")
 
     # performing main logic

@@ -76,17 +76,22 @@ const NavForm = (props) => {
           // REST POST request to the backend.
           fetch(`${BACKEND_URL}/get-route`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
+            headers: {'Content-Type':'application/json',
+            'Access-Control-Allow-Origin':'*',
+            'Access-Control-Allow-Methods':'POST,PATCH,OPTIONS'},
             body: JSON.stringify(requestBody)
           })
         .then(response => response.json())
-        .then(data =>  { 
-            setFormData({...formData, route:data.path}) ;
-            setRouteData({...routeData, elevationReturned:data.elevation, distanceReturned:data.distance, timeReturned: data.time });
-            setRoute(data.path);
-            setIsLoading(false); 
+        .then(data =>  {
+                if ("errorMessage" in data){
+                    setIsLoading(false);
+                    setFormData({...formData, apiError: true, errorMessage: data.errorMessage});
+                } else{
+                    setFormData({...formData, route:data.path})
+                    setRouteData({...routeData, elevationReturned:data.elevation, distanceReturned:data.distance, timeReturned: data.time });
+                    setRoute(data.path);
+                    setIsLoading(false); 
+                }
         })
         
          // set map route from props
@@ -112,6 +117,9 @@ const NavForm = (props) => {
         console.log(BACKEND_URL)
         fetch(`${BACKEND_URL}/get-place?place=${inp}`, {
             method: 'GET',
+            headers: {'Content-Type':'application/json',
+            'Access-Control-Allow-Origin':'*',
+            'Access-Control-Allow-Methods':'POST,GET,PATCH,OPTIONS'},
         })
         .then(response => response.json())
         .then(data =>  {
@@ -190,7 +198,7 @@ const NavForm = (props) => {
             </div>
 
             <div className='slider-element'>
-                <Slider color="primary" defaultValue={100}  min={100} max={200} value={formData.distConstraint} aria-label="slider" valueLabelDisplay="auto" 
+                <Slider color="primary" defaultValue={100.5}  min={100.5} max={200} value={formData.distConstraint} aria-label="slider" valueLabelDisplay="auto" 
                 onChange={e=> setFormData({...formData, distConstraint: e.target.value})}/>      
             </div> 
 
@@ -206,8 +214,8 @@ const NavForm = (props) => {
                         id="demo-simple-select"
                         label="ElevationGain"
                         onChange={e=> setFormData({...formData, elevationGain: e.target.value})}>
-                        <MenuItem value={0}>Minimum</MenuItem>
-                        <MenuItem value={100}>Maximum</MenuItem>
+                        <MenuItem value='min'>Minimum</MenuItem>
+                        <MenuItem value='max'>Maximum</MenuItem>
                     </Select>
                 </FormControl>
             </div>

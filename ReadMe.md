@@ -8,7 +8,7 @@
 
 
 <p align="center">
-    <img src="https://www.shutterstock.com/image-illustration/silhouette-cyclist-riding-road-bike-sunset-129018434" width="400" alt="Elena">
+    <img src="elena.jpg" width="400" alt="Elena">
 <p align="center">
 
 

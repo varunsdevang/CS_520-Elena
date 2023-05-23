@@ -34,14 +34,6 @@ class UtilsController:
             total_elevation+= abs(graph.nodes[nodes[node_pointer]]["elevation"] - graph.nodes[nodes[prev_node_pointer]]["elevation"])
         return total_elevation
 
-    def return_path(self,closest_nodes):
-		# generate path by backtracking
-		path = [self.ending_node]
-		curr_node = self.ending_node
-		while(curr_node!=self.starting_node):
-			curr_node = closest_nodes[curr_node]
-			path.insert(0,curr_node)
-		return path
 
     def get_path_time(self,graph,path):
         node_pointer = 1

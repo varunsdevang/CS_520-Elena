@@ -1,19 +1,32 @@
+import os
+import sys
+SCRIPT_DIR = os.path.dirname(os.path.abspath("."))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
 import osmnx as ox
 import networkx as nx
 import heapq
 import pickle as pkl
-from utils import UtilsController
 
 class A_Star:
     def __init__(self,G,starting_node,ending_node):
         self.graph = G
         self.starting_node = starting_node
         self.ending_node = ending_node
-        self.utils = UtilsController()
+        #self.utils = UtilsController()
 
     def heuristic_distance(self, node1, node2):
         # for f score generating shortest distance between two points
         return nx.shortest_path_length(self.graph, node1, node2, weight="length")
+    
+    def return_path(self,closest_nodes):
+		# generate path by backtracking
+        path = [self.ending_node]
+        curr_node = self.ending_node
+        while(curr_node!=self.starting_node):
+            curr_node = closest_nodes[curr_node]
+            path.insert(0,curr_node)
+        return path
 
     def shortest_path(self):
         nodes = []
@@ -42,7 +55,7 @@ class A_Star:
                     # adding the node back to list of nodes to traverse
                     heapq.heappush(nodes, (f_scores[end_b], end_b))
 
-        path = self.utils.return_path(closest_node_record)
+        path = self.return_path(closest_node_record)
         return path
 
 

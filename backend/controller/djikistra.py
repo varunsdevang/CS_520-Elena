@@ -1,18 +1,37 @@
 import osmnx as ox
 import heapq
 import pickle as pkl
-from utils import UtilsController
 
 class Djikistra:
 	def __init__(self,G,starting_node,ending_node):
 		self.graph = G
 		self.starting_node = starting_node
 		self.ending_node = ending_node
-		self.utils = UtilsController()
+		#self.utils = UtilsController()
 	
 	def elevation_diff(self,node_a,node_b):
 		# get elevation gain
 		return self.graph.nodes[node_b]["elevation"] - self.graph.nodes[node_a]["elevation"]
+	
+	def return_path(self,closest_nodes):
+		# generate path by backtracking
+		path = [self.ending_node]
+		curr_node = self.ending_node
+		while(curr_node!=self.starting_node):
+			curr_node = closest_nodes[curr_node]
+			path.insert(0,curr_node)
+		return path
+	
+	def get_path_length(self,path):
+		# calculate length of the path by checking each edge in the graph
+		node_pointer = 1
+		prev_node_pointer = 0
+		length = self.graph.edges[path[prev_node_pointer],path[node_pointer],0]["length"]
+		while(node_pointer<len(path)-1):
+			prev_node_pointer+=1
+			node_pointer+=1
+			length+=self.graph.edges[path[prev_node_pointer],path[node_pointer],0]["length"]
+		return length
 
 	def shortest_path(self):
 		nodes = []
@@ -40,7 +59,7 @@ class Djikistra:
 					heapq.heappush(nodes, (cost_record[end_b], end_b))
 
 		# constructing path from the nearest node record
-		path = self.utils.return_path(closest_node_record)
+		path = self.return_path(closest_node_record)
 		return path, cost_record
 	
 
@@ -61,7 +80,7 @@ class Djikistra:
 		
 		# getting the shortest path length record to be used as a reference
 		shortest_path, shortest_path_weight_record = self.shortest_path()
-		shortest_path_length = self.utils.get_path_length(self.graph,shortest_path)
+		shortest_path_length = self.get_path_length(shortest_path)
 		print(shortest_path_length)
 
 		# running djikistra again but now with elevation as base condition
@@ -106,8 +125,8 @@ class Djikistra:
 							heapq.heappush(nodes, (elevation_record[end_b], end_b))
 					# only if both are satisfied, push the neighbours 
 
-		elevation_path = self.utilsreturn_path(closest_node_record)
-		elevation_path_length = self.utils.get_path_length(self.graph,elevation_path)
+		elevation_path = self.return_path(closest_node_record)
+		elevation_path_length = self.get_path_length(elevation_path)
 		print(elevation_path_length)
 
 		# return elevation_path only if it satisfies the percent_gain constraint, if not the case, default to shortest_path

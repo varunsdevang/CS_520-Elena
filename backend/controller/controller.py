@@ -47,7 +47,7 @@ def get_route():
         logging.error("Please recheck and try again!")
         return utils.return_error_response("Wrong params provided!")
     
-    logging.info(f"Obtained a request to generate route between {source} and {destination}...")
+    logging.info(f"Obtained a request to generate route between {starting_point} and {ending_point}...")
     model_graph = model.graph.Graph(starting_point,ending_point,mode)
     G = model_graph.get_graph()
 
@@ -56,7 +56,7 @@ def get_route():
         return utils.return_error_response("Source and destination are too far away from each other, please select closer places!")
 
     # performing main logic
-    path_finder = AlgorithmSelector(G,starting_point,ending_point,elevation)
+    path_finder = AlgorithmSelector(G,starting_point,ending_point,elevation, percent_gain)
     nodes_list, elevation = path_finder.optimal_route()
 
     # converting list of nodes to list of coordinates

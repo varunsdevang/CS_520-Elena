@@ -9,6 +9,7 @@
 - install npm and its dependencies.
 - install project dependencies ```npm install```
 - to start the server -  ```npm start ``` 
+- to run test cases - ``` npm test ```
 
 ## Components
 ### App

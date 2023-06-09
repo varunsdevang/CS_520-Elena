@@ -29,13 +29,11 @@ It aims to provide elevation optimized navigation and routes using Djikstra and 
 
 ## Tech Stack
 This project tech stack has been selected to implement best software engineering inheritently.
-IDE
-- [VSCode](https://code.visualstudio.com/)
-Backend
+### Backend
 - [Flask](https://flask.palletsprojects.com/en/2.2.x/)
 - [OpenstreetMap](https://wiki.openstreetmap.org/wiki/OSMPythonTools)
 
-Front-end
+### Front-end
 - [React.js](https://reactjs.org/)
 - [Node.js](https://nodejs.org)
 
